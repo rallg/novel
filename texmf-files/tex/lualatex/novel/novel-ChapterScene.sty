@@ -1,0 +1,395 @@
+%% This is file `novel-ChapterScene.sty', part of `novel' document class.
+%% Copyright 2017-2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%% License URL:  https://www.latex-project.org/lppl/lppl-1-3c/
+%%
+\ProvidesFile{novel-ChapterScene.sty}%
+[2023/08/26 v1.82 LaTeX file (chapter and scene macros)]
+%%
+
+
+% Each new chapter generally has its own header/footer style. This allows a
+% default setting when chapters begin with ChapterStart environment:
+\gdef\SetChapterStartStyle#1{%
+  \@tempTFfalse%
+  \ifthenelse{\equal{#1}{fancy}}{\@tempTFtrue}{}%
+  \ifthenelse{\equal{#1}{empty}}{\@tempTFtrue}{}%
+  \ifthenelse{\equal{#1}{plain} %
+  \OR \equal{#1}{fancyplain} \OR \equal{#1}{footer}}{%
+    \@tempTFtrue%
+  }{}%
+  \ifthenelse{\equal{#1}{forcenumber}}{\@tempTFtrue}{}%
+  \ifthenelse{\equal{#1}{dropfolioinside} %
+  \OR \equal{#1}{dropfolio} \OR \equal{#1}{dropfoliolater}}{%
+    \@tempTFtrue%
+  }{}%
+  \ifthenelse{\equal{#1}{dropfoliobeneath}}{\@tempTFtrue}{}%
+  \if@tempTF%
+    \gdef\@setchapterstart{#1}%
+  \else%
+    \ClassError{novel}{Invalid choice for \string\SetChapterStartStyle}%
+     {Choose: fancy, empty, plain, footer, forcenumber, %
+      dropfolioinside, dropfoliobeneath.}%
+  \fi%
+}
+\let\SetChapterStart\SetChapterStartStyle\relax % deprecated from v1.40.3.
+\SetChapterStartStyle{footer} % default
+\gdef\SetChapterStartHeight#1{%
+  \FPifint{#1}\else%
+    \ClassError{novel}{\string\SetChapterStartHeight\space integer >= 4}%
+    {Height of ChapterStart must be integer, greater than or equal to 4.}%
+  \fi%
+  \FPiflt{#1}{4}%
+    \ClassError{novel}{\string\SetChapterStartHeight\space integer >= 4}%
+    {Height of ChapterStart must be integer, greater than or equal to 4.}%
+  \else\fi%
+  \gdef\@setchapterstartheight{#1}%
+}
+\SetChapterStartHeight{10} % default
+% See novel.cls for the accompanying AtBeginDocument routine.
+% Scene breaks:
+% \SetScenebreakIndent controls whether line after \scenebreak, \sceneline, 
+%   or \scenestars will be indented. Set true or false, default false.
+%% End reserve space for header/footer and set default ChapterStart
+\newif\if@IndentAfterScenebreak
+\newcommand\SetScenebreakIndent[1]{% true or false, default false.
+  \@tempTFfalse
+  \ifthenelse{\equal{#1}{true}}{%
+    \@tempTFtrue
+    \global\@IndentAfterScenebreaktrue
+  }{}%
+  \ifthenelse{\equal{#1}{false}}{%
+    \@tempTFtrue
+    \global\@IndentAfterScenebreakfalse
+  }{}%
+  \if@tempTF\else%
+    \ClassError{novel}{Bad argument for \string\SetScenebreakIndent\space}%
+    {\string\SetScenebreakIndent\space argument must be true or false.}%
+  \fi%
+}
+\SetScenebreakIndent{false} % default
+% Deprecated:
+\newcommand\IndentAfterScenebreak{\global\@IndentAfterScenebreaktrue}
+
+
+
+%% SCENE CHANGES
+%% ----------------------------------------------------------------------------
+% \scenebreak    \sceneline    \scenestars
+%   Use anywhere in document body.
+%   These commands skip a line.
+%   \scenebreak leaves the gap empty.
+%   \sceneline centers a line, about 1/3 textwidth.
+%   \scenestars centers three widely-spaced asterisks.
+%   Default behavior is \noindent for following paragraph.
+%   Use \SetScenebreakIndent{true or false} in Preamble to change globally.
+%   Either way, local behavior changed using \forceindent or \backindent.
+% \newcommand\scenebreak{\null}
+%
+\newcommand\scenebreak{%
+  \leavevmode\getBreakpos{scenebreak}~\par
+}
+%
+\newcommand\sceneline{%
+  \noindent\getBreakpos{sceneline}\hfil%
+  \raisebox{0.2em}{\rule{0.35\textwidth}{.4pt}}\hfil\par%
+}
+%
+\newcommand\scenestars{%
+  \noindent\getBreakpos{scenestars}\hfil%
+  \raisebox{-.3em}{*\quad\quad*\quad\quad*}\hfil\par%
+}
+%
+\gdef\getBreakpos#1{%
+  \begingroup%
+    \savepos%
+    \protected@write\@auxout{}{%
+      \protect\@getBreakpos{\noexpand\number\lastypos}{\thepage}{#1}%
+    }%
+  \endgroup%
+}
+%
+\newlength\CurrentBreakpos
+\gdef\@getBreakpos#1#2#3{} % nothing, when reading aux at beginning
+\gdef\@RedefineBreakpos{ % called by `novel.cls' \AtBeginDocument
+  \gdef\@getBreakpos##1##2##3{% numerical position sp, page, break type
+    \gsetlength\CurrentBreakpos{##1sp}% measured up from very bottom of page.
+    \FPsub{\@BreakLines}{\strip@pt\TotalYpos}{\strip@pt\CurrentBreakpos}
+    \FPdiv{\@BreakLines}{\@BreakLines}{\strip@pt\nbs}%
+    \FPround{\@BreakLines}{\@BreakLines}{0}% integer lines from text top
+    \ifthenelse{\equal{##3}{scenebreak}}{%
+    \xdef\thisline{\@BreakLines}%
+      \ifnum\@BreakLines=1%
+        \ClassWarning{novel}{Replace \string\scenebreak\space at top of ^^J%
+         page ##2 with \string\sceneline\space or \string\scenestars.}%
+      \fi%
+      \ifnum\@BreakLines=\@LinesPerPage%
+        \ClassWarning{novel}{Replace \string\scenebreak\space at bottom of ^^J%
+         page ##2 with \string\sceneline\space or \string\scenestars.}%
+      \fi%
+    }{}%
+    \FPsub{\@nearthebottom}{\@LinesPerPage}{1}%
+    \ifnum\@BreakLines=2%
+      \ClassWarning{novel}{\string\ ##3 too close to top of page ##2.}%
+    \fi%
+    \ifnum\@BreakLines=\@nearthebottom%
+      \ClassWarning{novel}{\string\ ##3 too close to bottom of page ##2.}%
+    \fi%
+  }%
+} % end @RedefineBreakpos
+%%
+
+
+%% Repair \FirstLine{} command from `magaz' package.
+% Problem: Conflict with \noindent\nov@AfterGroup as used in ChapterStart.
+%   The \noindent is carried past \FirstLine to the following paragraph.
+% Solution: After FirstLine completes, back up one line vertically, then insert
+%   and empty line to restore grid and absorb the noindent.
+% Starred version uses the original \FirstLine definition, just in case
+%   the following paragraph has some exotic feature.
+% Thanks to user `egreg' at tex.stackexchange.com for assistance.
+\let\oldFirstLine\FirstLine
+\def\FirstLine{\@ifstar\FirstLineFoo\@FirstLineFoo} % improved
+\def\FirstLineFoo#1{\oldFirstLine{#1}} % starred restores original def.
+\def\@FirstLineFoo#1{%
+  \oldFirstLine{#1}\par\vspace{-\nbs}\strut\par%
+}
+%%
+
+
+%% Chapter number count.
+%% Do NOT use for "chapter-like" sections, only numbered chapters.
+\newcounter{novelcn}
+\setcounter{novelcn}{1}
+%%
+
+%% ChapterStart environment.
+% The most useful way to start a new chapter. Occupies a fixed amount of
+%   vertical space. Also self-adjust when used with dropfolio. Automatically
+%   calls \thispagestyle if set for all chapter displays.
+% This environment is not restricted to chapters. It is also used for
+%   chapter-like sections in front matter or main matter,
+%   as long as they are styled like a chapter.
+\newcounter{@linequarter}
+
+%
+% The argument is the number of normal baselineskips high.
+\newif\if@WithinChapterStart
+\DeclareDocumentEnvironment {ChapterStart} %
+{ O{\@setchapterstartheight} O{\@setchapterstart} }{%
+  \if@ThisPageStyle\else%
+    \gdef\@thiscsstyle{#2}%
+    \thispagestyle{\@thiscsstyle}%
+  \fi%
+  \global\@WithinChapterStarttrue%
+  \suppressfloats[t]% ensures that a floated image does not go on top
+  \gsetlength\parindent{0pt}% within environment
+  \ResetFootnoteSymbol% resets symbolic markers, but not numerical markers
+  \IfStrEq{#1}{*}{%
+    \gdef\@thiscsheight{\@setchapterstartheight}%
+  }{%
+    \gdef\@thiscsheight{#1}%
+  }%
+  \FPsub{\@fixlines}{\@thiscsheight}{2}%
+  \FPsub{\@fixlines}{\@fixlines}{0.001}% fudge to avoid rounding problems
+  \FPround{\@thiscsheight}{\@thiscsheight}{0}%
+  \FPiflt{\@thiscsheight}{4}%
+    \def\@smcserr{%
+      \ClassError{novel}{ChapterStart height insufficient for thispagestyle}%
+       {With your choice for thispagestyle, the height must be at least 4.}%
+    }%
+    \IfStrEq{\@thiscsstyle}{dropfolioinside}{\@smcserr}{}%j
+    \IfStrEq{\@thiscsstyle}{plain}{\@smcserr}{}%
+    \IfStrEq{\@thiscsstyle}{fancyplain}{\@smcserr}{}%
+  \else\fi%
+  \FPiflt{\@thiscsheight}{3}%
+    \ClassError{novel}{ChapterStart height must be at least 3}%
+      {If you need height less than 3, consider \string\QuickChapter.}%
+  \else\fi%
+  \null% always a line above the first thing to appear within the environment
+  \setcounter{@linequarter}{0}%
+  \begin{textblock*}{\textwidth}[0,0](0pt,0pt)%
+}{% close the environment:
+  \ifthenelse{%
+    \equal{\value{@linequarter}}{1} \OR \equal{\value{@linequarter}}{5}%
+    \OR \equal{\value{@linequarter}}{9} \OR \equal{\value{@linequarter}}{13}%
+  }{\vspace{0.75\nbs}}{}%
+  \ifthenelse{%
+    \equal{\value{@linequarter}}{2} \OR \equal{\value{@linequarter}}{6}%
+    \OR \equal{\value{@linequarter}}{10} \OR \equal{\value{@linequarter}}{14}%
+  }{\vspace{0.5\nbs}}{}%
+  \ifthenelse{%
+    \equal{\value{@linequarter}}{3} \OR \equal{\value{@linequarter}}{7}%
+    \OR \equal{\value{@linequarter}}{11} \OR \equal{\value{@linequarter}}{15}%
+  }{\vspace{0.25\nbs}}{}%
+  \end{textblock*}%
+  \vspace{\@fixlines\nbs}%
+  \if@DeleteCSline\else\null\fi% adjusts when dropfolioinside
+  \global\@WithinChapterStartfalse%
+  \vspace{0.1pt plus 0pt minus 0.2pt}% caulk
+  \gsetlength\parindent{\normalparindent}% restored
+  \nov@AfterGroup\NoIndentAfterThis% etextools and noindentafter
+}
+% end ChapterStart environment
+
+
+%%
+\LetLtxMacro\ChapterDisplay\ChapterStart\relax % deprecated
+\LetLtxMacro\endChapterDisplay\endChapterStart\relax % deprecated
+%
+\newcommand\ChapterTitle[2][c]{% optional alignment l, c, r
+  \ignorespaces%
+  \vspace{0.5\nbs}\addtocounter{@linequarter}{2}%
+  \@tempTFfalse%
+  \ifthenelse{\equal{#1}{l}}{\let\@csalign\relax\@tempTFtrue}{}%
+  \ifthenelse{\equal{#1}{c}}{\let\@csalign\centering\relax\@tempTFtrue}{}%
+  \ifthenelse{\equal{#1}{r}}{\let\@csalign\hfill\relax\@tempTFtrue}{}%
+  \if@tempTF\else%
+    \ClassError{novel}{Chapter Title, Deco, Subtitle align must be l, c, or r}%
+    {On page \thepage you wrote a Chapter command with alignment ^^J%
+     other than the allowed l, c, or r.}%
+  \fi%
+  {\@csalign\stake\smash{{\chapterfont{}#2}}\par}%
+}
+%
+\newcommand\ChapterSubtitle[2][c]{% optional alignment l, c, r
+  \vspace{0.25\nbs}\addtocounter{@linequarter}{1}
+  \@tempTFfalse%
+  \ifthenelse{\equal{#1}{l}}{\let\@csalign\relax\@tempTFtrue}{}
+  \ifthenelse{\equal{#1}{c}}{\let\@csalign\centering\relax\@tempTFtrue}{}
+  \ifthenelse{\equal{#1}{r}}{\let\@csalign\hfill\relax\@tempTFtrue}{}
+  \if@tempTF\else%
+    \ClassError{novel}{Chapter Title, Deco, Subtitle align must be l, c, or r}%
+    {On page \thepage you wrote a Chapter command with alignment ^^J%
+     other than the allowed l, c, or r.}%
+  \fi%
+  {\@csalign{\stake\smash{\subchfont #2}}\par}%
+}
+% In ChapterDeco, a trick is used. Instead of two optional arguments, and
+% instead of using expl3 syntax to create different argument delimiters,
+% the arguments for alignment and scale are passed as a single option.
+% This works because one is a letter, and the other is a number.
+% So it is easy to separte them by parsing.
+\newcommand\ChapterDeco[2][c1]{% optional alignment and scale, either order
+  \@tempTFfalse
+  \StrDel{#1}{ }[\temp@cds]% may use space separator
+  \StrDel{\temp@cds}{,}[\temp@cd]% may use comma separator
+  \IfSubStr{#1}{l}{% left align
+    \let\@csalign\relax\@tempTFtrue%
+    \StrDel{\temp@cd}{l}[\temp@cd]%
+  }{}%
+  \IfSubStr{#1}{c}{% centered
+    \let\@csalign\centering\relax\@tempTFtrue%
+    \StrDel{\temp@cd}{c}[\temp@cd]%
+  }{}%
+  \IfSubStr{#1}{r}{% right align
+    \let\@csalign\hfill\relax\@tempTFtrue%
+    \StrDel{\temp@cd}{r}[\temp@cd]%
+  }{}%
+  \if@tempTF\else%
+    \let\@csalign\centering\relax\@tempTFtrue%
+  \fi%
+  % Now for scaling, with adjusted vertical position:
+  \IfEndWith{\temp@cd}{.}{\StrSubstitute{\temp@cd}{.}{.0}[\temp@cd]}{}%
+  \IfBeginWith{\temp@cd}{.}{\StrSubstitute{\temp@cd}{.}{1.}[\temp@cd]}{}%
+  \IfDecimal{\temp@cd}{\def\@thisScale{\temp@cd}}{\def\@thisScale{1}}%
+  {\@csalign\charscale[\@thisScale,0pt,0.2\nbs]{#2}\par}%
+}
+%
+%%
+
+
+%% \QuickChapter[line style]{text} intended for a story consisting of numerous
+% short chapters without page breaks. Two blank lines are inserted. In the gap
+% is the text, using subchfont. Optional line follows using \bigemdash style.
+% If option is empty, no line. If a length, then the line is that length.
+% If option * then the line fills to end of text line.
+\newcommand\QuickChapter[2][]{%
+  \null%
+  \noindent{\subchfont\charscale[1,0pt,0.3em]{#2}%
+    \gsetlength\@tempLength{\heightof{x}}% height of x in subchfont
+  }% end subchfont
+  \FPdiv{\@qclineth}{\strip@pt\@tempLength}{\strip@pt\normalxheight}% fontscale
+  \FPmul{\@howthick}{\@qclineth}{0.049}% typical emdash thickness, em.
+  \FPmul{\@howraise}{0.23}{\@qclineth}% typical emdash height em raised.
+  \ifthenelse{\equal{#1}{} \OR \equal{#1}{ }}{}{% no line, else:
+    \ifthenelse{\equal{#1}{*}}{% line fills:
+      ~\leaders%
+      \hbox{\smash{\rule[\@howraise em]{1pt}{\@howthick em}}}%
+      \hfill\stake\par%
+    }{% else line at specific length:
+      ~\makebox[#1][l]{%
+        \leaders\hbox{\smash{\rule[\@howraise em]{1pt}{\@howthick em}}}\hfill%
+      }%
+    }%
+  }%
+  \NoIndentAfterThis%
+} % end \QuickChapter
+%%
+
+
+%%
+% \cleartorecto works same as \clearpage when next page is recto.
+%   If next page would be verso, a blank verso is inserted,
+%   so that the following material is recto.
+% \cleartoend is used at very end of book.
+%   It adds a blank page. If the blank is verso, end of book.
+%   But if that blank is recto, it adds a second blank page, end of book.
+%   So, the book always ends with a blank verso.
+\gdef\cleartorecto{
+  \clearpage
+  \ifodd\c@page
+  \else
+    \thispagestyle{empty}
+    \null
+    \clearpage
+  \fi
+}
+\newif \if@cleartoend
+\gdef\cleartoend{
+  \if@cleartoend\else
+    \clearpage
+    \ifodd\c@page
+      \thispagestyle{empty}
+      \null
+      \clearpage
+    \fi
+    \thispagestyle{empty}
+    \null
+    \clearpage
+  \fi
+  \global\@cleartoendtrue
+}
+%
+
+
+%%
+\gdef\@ActivateChapterScene{% called by `novel.cls' \AtBeginDocument
+  % Activate user choice of whether or not to indent after scenebreak commands:
+  \if@IndentAfterScenebreak\else
+    \NoIndentAfterCmd{\scenebreak}
+    \NoIndentAfterCmd{\sceneline}
+    \NoIndentAfterCmd{\scenestars}
+  \fi
+}% end \@ActivateChapterScene
+%%
+
+
+%% Neutralize settings commands:
+\gdef\@DisableChapterSceneSettings{% called by `novel.cls' \AtBeginDocument
+  \LetLtxMacro\SetHeadFootStyle\relax
+  \LetLtxMacro\IndentAfterScenebreak\relax
+  \LetLtxMacro\SetScenebreakIndent\relax
+}% end \@DisableChapterSceneSettings
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novel-ChapterScene.sty'.
+
+

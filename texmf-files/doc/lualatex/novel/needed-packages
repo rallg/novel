@@ -1,0 +1,11 @@
+
+To use `novel' you need LaTeX with lualatex.
+
+In addition to the minimal setup, you will need these packages:
+
+textpos magaz xcolor adjustbox eso-pic pdfpages unicode-math fp iftex
+libertinus-fonts makecmds xkeyval lm-math xstring xifthen silence
+collectbox pgf lipsum wrapfig pdflscape polyglossia microtype hyperref
+
+You will need language support, for your language(s).
+If using lipsum, you will need hyphen-latin.

@@ -1,0 +1,558 @@
+%% This is file `novel-Images.sty', part of `novel' document class.
+%% Copyright 2017-2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%% License URL:  https://www.latex-project.org/lppl/lppl-1-3c/
+%%
+\ProvidesFile{novel-Images.sty}%
+[2023/08/26 v1.82 LaTeX file (image placement)]
+%%
+
+
+%% In `novel', images are handled with a view to preserving uniform line grid.
+%% Normally, a work of fiction has no (or very few) images within the main
+%%   body of text. Images are more likely on display pages (such as title page)
+%%   or in chapter starts, or maps.
+
+%% There are two ways to place an image: inline, or float.
+%% Inline image does not occupy its own block, but mingles with flowing text.
+%% Float image occupies its own block, which will be placed where the command
+%%   is written, if it fits on that page. If it doesn't fit, then it will be
+%%   placed at the top of the following page. Surrounding text will be
+%%   typeset so at to not leave a big gap. Althouth TeX allows several
+%%   options for positioning a float, `novel' only allows one method.
+
+%% Be sure to read the separate documentation about how to prepare images.
+%% In general: (1) png or jpg only. (2) Flattened, no transparency.
+%% (3) 300dpi (grayscale) or 600dpi (black/white) are industry norms.
+%% (4) Image file must contain its resolution. (5) Exact size, without scaling.
+%% (6) No private metadata. (7) Be sure grayscale is 1-channel, not rgb gray.
+
+
+%% Luacode and related macro thanks to user Marcel Krüger,
+%% at tex.stackexchange.com.
+\RequirePackage{luacode}
+\begin{luacode*}
+  function check_colorspaces(allowed_colorspace, name)
+  local doc = epdf.open(name);
+  if doc == nil then
+    tex.sprint(luatexbase.catcodetables['latex-package'],
+        "\\errmessage{Could not open " .. name .. "}{}{}\\@gobbletwo")
+    return;
+  else
+    for pageno=1,doc:getNumPages() do
+      local xobjs= doc:getCatalog():getPage(pageno):getResourceDict():lookup("XObject");
+      if not xobjs:isNull() then
+        for i=1,xobjs:dictGetLength() do
+          xobjDict = xobjs:dictGetVal(i):streamGetDict()
+          if xobjDict:lookup('Subtype'):getName() == 'Image' then
+            if not allowed_colorspace[xobjDict:lookup('ColorSpace'):getName()] then
+              tex.sprint(luatexbase.catcodetables['latex-package'], '\\@firstoftwo')
+              return
+            end
+          end
+        end
+      end
+    end
+  end
+  tex.sprint(luatexbase.catcodetables['latex-package'], '\\@secondoftwo')
+  return;
+end
+\end{luacode*}
+%
+\newcommand\PDFHasDisallowedColorspaceTF[1]{%
+  \directlua{check_colorspaces({DeviceCMYK=true, DeviceGray=true},"\luaescapestring{#1}")}%
+}
+%%
+%%
+\begin{luacode*}
+  function utf16to8(u16str)
+    local result = ""
+    local i = 1
+    if #u16str % 2 == 1 then
+      print("ERROR")
+      return
+    end
+    while i < #u16str do
+      local high, low = u16str:byte(i, i + 1)
+      i = i + 2
+      local current = bit32.replace(low, high, 8, 8)
+      if bit32.band(high, 0xFC) == 0xD8 then
+        current = bit32.replace(0, current, 10, 10)
+        if i > #u16str then
+          print("ERROR")
+          return
+        end
+        high, low = u16str:byte(i, i + 1)
+        i = i + 2
+        current = bit32.replace(current, bit32.replace(low, high, 8, 8), 0, 10) + 0x10000
+      elseif bit32.band(high, 0xFC) == 0xDC then
+        print("ERROR")
+        return
+      end
+      result = result .. unicode.utf8.char(current)
+    end
+    return result
+  end
+  function normalize_string(str)
+    if str:sub(1,2) == "\xFE\xFF" then
+      return utf16to8(str:sub(3,-3))
+    else
+      return str
+    end
+  end
+  function check_pdf_info(name, field, expected)
+    local doc = epdf.open(name);
+    if doc == nil then
+      tex.sprint(luatexbase.catcodetables['latex-package'],
+          "\\errmessage{Could not open " .. name .. "}{}{}\\@gobbletwo")
+    else
+      local producer = doc:getDocInfo():dictLookup(field)
+      if not producer:isNull() and normalize_string(producer:getString()) == expected then
+        tex.sprint(luatexbase.catcodetables['latex-package'], '\\@firstoftwo')
+      else
+        tex.sprint(luatexbase.catcodetables['latex-package'], '\\@secondoftwo')
+      end
+    end
+  end
+\end{luacode*}
+\newcommand\PDFVerifyInfoFieldTF[3]{\directlua{check_pdf_info("\luaescapestring{#1}", "\luaescapestring{#2}", "\luaescapestring{#3}")}}
+%%
+
+
+%%
+\LetLtxMacro\@scriptincludepdf\includepdf\relax
+\providecommand\includepdf[2][]{}
+\renewcommand\includepdf[2][]{% from package `pdfpages'
+  \ClassError{novel}{Cannot use \string\includepdf\space command}%
+   {You can use novel-scripts `makegray' and `makebw' to convert pdf %%J%
+    to a raster jpg or png, suitable for placement as an image.}%
+}
+\gdef\ScriptCoverImage#1{%
+  \if@coverart%
+    \PDFVerifyInfoFieldTF{#1}{NSprocessed}{true}%
+    {\@scriptincludepdf{#1}}%
+    {\ClassError{novel}{Book cover pdf must be pre-processed by novel-scripts}%
+     {Each pdf processed by novel-scripts is marked internally. ^^J%
+     Your cover artwork pdf is unmarked. Use `makecmykpdf' script.}%
+    }%
+  \else%
+    \ClassError{novel}{Cannot use \string\ScriptCoverImage\space in interior}%
+     {\string\ScriptCoverImage\space only with `coverart' class option.}%
+  \fi%
+} %
+%%
+
+
+% Pertains to images:
+\newlength\imagewidth
+\newlength\imageheight
+\newlength\imagehoffset
+\newlength\imagevoffset
+\newlength\@imagewidth
+\newlength\@imageheight
+\newlength\@imagehoffset
+\newlength\@imagevoffset
+\newlength\@mytotalht
+\newif \if@UsingNovelCommand % true within \InlineImage etc.
+%%
+\gdef\imagestarred{false}
+\gdef\imagefilename{unknown}
+\setkeys{Gin}{draft=false} % always shows the image, not a box outline
+\LetLtxMacro\novel@sub@inclgr\includegraphics\relax
+\if@coverart\else % Need to allow it, for possible use by \includepdf in cover.
+  \renewcommand\includegraphics[2][]{%
+    \ClassError{novel}{Direct use of \string\includegraphics\space forbidden}%
+     {You may only place images using commands specific to `novel' class. ^^J%
+      See `novel' documentation, section 7.}%
+  }
+\fi
+%
+\newcommand\@TestImageExtension[1]{%
+  \@tempTFfalse%
+  \IfEndWith{#1}{.png}{\@tempTFtrue}{}%
+  \IfEndWith{#1}{.PNG}{\@tempTFtrue}{}%
+  \IfEndWith{#1}{.jpg}{\@tempTFtrue}{}%
+  \IfEndWith{#1}{.JPG}{\@tempTFtrue}{}%
+  \IfEndWith{#1}{.jpeg}{\@tempTFtrue}{}%
+  \IfEndWith{#1}{.JPEG}{\@tempTFtrue}{}%
+  \if@tempTF\else%
+    \ClassError{novel}{Image format `#1' not allowed, page \thepage}%
+    {Image `#1' has file type not allowed in `novel' class. ^^J%
+     Must have file extension png, jpg, jpeg (or capitalized). ^^J%
+     Others such as pdf, bmp, tiff, eps, svg, jp2, jbig, are not allowed. ^^J%
+     The file extension is mandatory. Provide it, if missing.}%
+  \fi%
+} %
+%%
+
+
+%% INLINE IMAGE
+%% ----------------------------------------------------------------------------
+% \InlineImage[xoffset,yoffset]{imagename.png} or jpg
+% As the name implies, an inline image is used within the flow of text, rather
+%   than in its own block. It may be used in main body, header, and footer.
+% Macros such as \imagefilename, \imagewidth, etc.
+%   are only set or re-set when the image in in the body. That prevents an
+%   intervening header/footer image from over-writing values set by%
+%   the most recent body image.
+% Without offsets, the image is positioned with is left edge at the cursor,
+%   and its top edge at the text baseline. Positive offsets are right and up.
+% If improperly positioned, the image can overlie (obscure) text that was
+%   previously placed. This is rarely desirable and may be flagged by
+%   some print services, because it looks wrong.
+% The image will underlie anything that follows. This may be used as a
+%   special effect, if allowed by the print service (probably OK).
+% With the un-starred command, the image occupies its natural cursor width.
+% With the starred command, the image occupies zero cursor width, so that
+%   anything following will overlie it.
+\DeclareDocumentCommand \InlineImage { s O{0pt} m }{%
+  \@TestImageExtension{#3}%
+  \@tempTFfalse%
+  \if@pdfxSEToff%
+    \@tempTFtrue%
+  \else%
+    \IfSubStr*{\@UnknownImages}{#3}{\@tempTFtrue}{}%
+    \IfSubStr*{\@AllGoodImages}{#3}{\@tempTFtrue}{}%
+  \fi%
+  \if@tempTF\else\@NovelInspectImage{#3}\fi%
+  \StrDel{#2}{\space}[\@myila]%
+  \StrCut{\@myila}{,}{\@myilxa}{\@myilya}%
+  \ifthenelse{\equal{\@myilxa}{} \OR \equal{\@myilxa}{0}}{%
+    \def\@myilx{0pt}}{\def\@myilx{\@myilxa}%
+  }%
+  \ifthenelse{\equal{\@myilya}{} \OR \equal{\@myilya}{0}}{%
+    \def\@myily{0pt}}{\def\@myily{\@myilya}%
+  }%
+  \iftoggle{@inheadfoot}{}{\gdef\imagefilename{#3}}% for possible later use
+  \global\@UsingNovelCommandtrue%
+  \gdef\@mygraphic{\novel@sub@inclgr{#3}}%
+  \gdef\@mygraphicname{#3}%
+  \setlength\@imagewidth{\widthof{\@mygraphic}}%
+  \global\@imagewidth=\@imagewidth%
+  \iftoggle{@inheadfoot}{}{\setlength\imagewidth{\@imagewidth}}%
+  \setlength\@imageheight{\heightof{\@mygraphic}}%
+  \global\@imageheight=\@imageheight%
+  \iftoggle{@inheadfoot}{}{%
+    \setlength\imageheight{\@imageheight}%
+    \global\imageheight=\imageheight%
+  }%
+  %
+  \setlength\@imagehoffset{\@myilx}%
+  \IfBeginWith{\@myily}{b}{%
+    \StrDel[1]{\@myily}{b}[\temp@adjVoffseta]%
+    \ifthenelse{\equal{\temp@adjVoffseta}{} \OR \equal{\temp@adjVoffseta}{0}}{%
+      \def\temp@adjVoffset{0pt}}{\def\temp@adjVoffset{\temp@adjVoffseta}%
+    }%
+    \setlength\@imagevoffset{\temp@adjVoffset}%
+  }{%
+    \setlength\@imagevoffset{-\@imageheight}%
+    \addtolength\@imagevoffset{\@myily}%
+  }%
+  %
+  \IfBooleanTF{#1}%
+  % starred:
+  {%
+    \iftoggle{@inheadfoot}{}{\gdef\imagestarred{true}}%
+    \makebox[0pt][l]{%
+      \hspace{\@imagehoffset}%
+      \stake\smash{\raisebox{\@imagevoffset}{\@mygraphic}}%
+    }%
+  }%
+  % unstarred:
+  {%
+    \iftoggle{@inheadfoot}{}{\gdef\imagestarred{false}}%
+    \hspace{\@imagehoffset}%
+    \stake\smash{\raisebox{\@imagevoffset}{\@mygraphic}}%
+  }% end IfBooleanTF{#1}
+  \iftoggle{@inheadfoot}{}{\setlength\imagehoffset{\@imagehoffset}}%
+  \iftoggle{@inheadfoot}{}{\setlength\imagevoffset{\@imagevoffset}}%
+  \global\@UsingNovelCommandfalse%
+} % 
+% end Inline Image
+%%
+
+
+%% FLOAT IMAGE (centered unless offset)
+%% ----------------------------------------------------------------------------
+% \FloatImage[floatmethod,xoffset,yoffset]{yourimagename.png} % or jpg
+% This is a substitute for other floats. Does not require `float' package.
+% Default: [ht,0pt,\nfs].
+% Method ht attempts to place the image where the code is written. But if it
+%   doesn't fit on that page, it will float to the top of the next page.
+% Method b attempts to place the image on the bottom of the page where the
+%   code is written. If not, it floats to the bottom of the next page.
+% Allowed float methods: ht hb t b. Equivalent to LaTeX floats with !.
+% Parsing the optional argument: comma-separated values, ignoring space.
+%   May be empty before or between commas.
+%   Example: [,,2em] is read as default method, xoffset 0pt, yoffset 2em.
+%   Example: [b] is valid, because a single value is read as method.
+\providecommand*\floatlocation[2]{\@namedef{fps@#1}{#2}}
+\floatlocation{figure}{!ht} % default
+\gdef\ftype@figure{1} % mystery TeX code
+\DeclareDocumentCommand \FloatImage { s O{ht} m } {% starred not in use
+  \iftoggle{@inheadfoot}{%
+    \ClassError{novel}{Cannot use \string\FloatImage\space in header/footer}%
+      {Header footer allow \string\InlineImage, but not \string\FloatImage.}%
+  }{}%
+  \@TestImageExtension{#3}%
+  \@tempTFfalse%
+  \if@pdfxSEToff%
+    \@tempTFtrue%
+  \else%
+    \IfSubStr*{\@UnknownImages}{#3}{\@tempTFtrue}{}%
+    \IfSubStr*{\@AllGoodImages}{#3}{\@tempTFtrue}{}%
+  \fi%
+  \if@tempTF\else\@NovelInspectImage{#3}\fi%
+  % Sadly, parsing with `xstring' involves roundabout code:
+  \StrDel{#2}{\space}[\@tempArgs]%
+  \StrCut{\@tempArgs}{,}{\@tempArgA}{\@tempArgX}%
+  \StrCut{\@tempArgX}{,}{\@tempArgB}{\@tempArgC}%
+  \ifthenelse{\equal{\@tempArgA}{}}{%
+    \def\@tempArgAa{ht}%
+  }{%
+    \def\@tempArgAa{\@tempArgA}%
+  }%
+  \ifthenelse{\equal{\@tempArgB}{0}\OR\equal{\@tempArgB}{}}{%
+    \def\@tempArgBb{0pt}%
+  }{%
+    \def\@tempArgBb{\@tempArgB}%
+  }%
+  \ifthenelse{\equal{\@tempArgC}{0}\OR\equal{\@tempArgC}{}}{%
+    \def\@tempArgCc{0pt}%
+  }{%
+    \def\@tempArgCc{\@tempArgC}%
+  }%
+  \StrDel{\@tempArgAa}{!}[\@tempArgAa]%
+  \@tempTFfalse%
+  \ifthenelse{\equal{\@tempArgAa}{ht}}{\@tempTFtrue}{}%
+  \ifthenelse{\equal{\@tempArgAa}{hb}}{\@tempTFtrue}{}%
+  \ifthenelse{\equal{\@tempArgAa}{t}}{\@tempTFtrue}{}%
+  \ifthenelse{\equal{\@tempArgAa}{b}}{\@tempTFtrue}{}%
+  \if@tempTF\else%
+    \ClassWarning{novel}{Incorrect position for \string\FloatImage, ^^J%
+     page \thepage. Default position ht substituted.}%
+  \fi%
+  \floatlocation{figure}{!\@tempArgAa}% enable current float method
+  %\vfil% One l.
+  \@float{figure}%
+  \@FloatImage{\@tempArgBb}{\@tempArgCc}{#3}%
+  \end@float\par%
+  \floatlocation{figure}{!ht}% restore default float method
+  \null%
+  \vspace{0.01pt plus 0pt minus 0.02pt} % caulk
+} %
+%
+
+%% Environment @floatimagegap. Only used by \@FloatImage command.
+% Creates a gap at fixed height, regardless of content.
+% Needs to compensate for prior line depth.
+\newcounter{@gaplines} % passes the argument down to environment end
+\DeclareDocumentEnvironment {@floatimagegap} { m } {%
+  \par%
+  \null%
+  \vspace*{-\nbs}%
+  \begin{textblock*}{\textwidth}[0,0](0pt,0pt)%
+  \setcounter{@gaplines}{#1}%
+  \strut\par%
+  \vspace*{-\nbs}%
+}{% close the environment:
+  \end{textblock*}%
+  \par%
+  \vspace*{#1\nbs}%
+} %
+%%
+\DeclareDocumentCommand \@FloatImage { m m m }{% DO NOT CALL DIRECTLY
+  \global\@UsingNovelCommandtrue%
+  \gdef\@mygraphic{\novel@sub@inclgr{#3}}%
+  \gdef\@mygraphicname{#3}%
+  \gsetlength\@imagewidth{\widthof{\@mygraphic}}%
+  \gsetlength\@imageheight{\heightof{\@mygraphic}}%
+  \setlength\@imagehoffset{#1}%
+  \setlength\@imagevoffset{#2-\@imageheight+\normalXheight}%
+  \setlength\@mytotalht{\@imageheight+0.3\nbs}%
+  \FPdiv{\@mytotalhtN}{\strip@pt\@mytotalht}{\strip@pt\nbs}%
+  \FPadd{\@mytotalhtN}{\@mytotalhtN}{0.5}% round upward
+  \FPround{\@mytotalhtN}{\@mytotalhtN}{0}% to integer
+  \FPmin{\@allowmyoverflow}{\@mytotalhtN}{\@LinesPerPage}% not exceeding lpp
+  % If a full-page image is too tall for a page, standard TeX float will
+  %   delay it until the time that floats are cleared, typically by \clearpage.
+  %   That would probably be at the end of a chapter.
+  % In `novel' this behavior is hacked. Regardless of the image's actual
+  %   height, it is treated as if its height does not exceed whatever will
+  %   fit on a single page. Then, a full-page float will appear at the first
+  %   opportunity, rather than being delayed. As a consquence, an oversized
+  %   full-page float may overflow into the footer or bottom margin.
+  %   To fix that (if it matters), you need to edit the image in graphics.
+  \begin{@floatimagegap}{\@allowmyoverflow}%
+    \vspace*{-\nfs}%
+    \null%
+    {\centering%
+      \makebox[0pt][l]{%
+        \hspace{\dimexpr\@imagehoffset-0.5\@imagewidth}%
+        \stake\smash{\raisebox{\@imagevoffset}{\@mygraphic}}%
+      }%
+      \par%
+    }%
+  \end{@floatimagegap}%
+  \global\@UsingNovelCommandfalse%
+} % 
+% end Float Image
+%%
+
+
+%% WRAP IMAGE
+% This is a shim to `wrapfig' package. Since `novel' uses its own method for
+%   placing images, environments defined in `wrapfig' cannot be used directly.
+% \WrapImage[position]{image} % default position r
+%   Optional position is same as with `wrapfig':
+%   l r o i places image "exactly here", left, right, outside, inside.
+%   L R O I allows image to float.
+% Since novel's \InlineImage normally can be over-written by following text,
+%   it needs an accompanying \rule to act as a strut.
+%
+\RequirePackage{wrapfig}
+%
+\DeclareDocumentCommand\WrapImage { O{r} m } {%
+  \begin{wrapfloat}{figure}{#1}{0pt}%
+  \InlineImage[0pt,\normalXheight]{#2}%
+  \rule[\dimexpr\normalXheight-\imageheight]{0pt}%
+    {\dimexpr\imageheight-\normalXheight+0.3\nfs}%
+  \end{wrapfloat}%
+}%
+\LetLtxMacro\wrapimage\WrapImage\relax
+% end Wrap Image.
+%%
+
+
+%% Read file bytes as plain text, for later parsing.
+% Output is comma-separated list of byte codes, decimal 0-255.
+% Returns -1 if requested start is more than file size.
+% Returns all bytes if requested number exceeds file size.
+% Does not test if file exists; error if not found.
+\DeclareDocumentCommand\novelgetbytes { m m m } {%
+  % filename, start byte number (0=beginning, e=up to end), number of bytes
+  \ifthenelse{\equal{#2}{e}}{% package xifthen
+    \long\edef\novelbytesare{%
+      \directlua{
+        inp = assert(io.open("#1", "rb"))
+        local e=inp:seek("end")
+        if #3>e+1 then
+          inp:seek("set")
+          local r=inp:read(e)
+          sep=""
+          for i,_ in string.bytes(r)
+          do
+          tex.sprint(sep)
+          sep=","
+          tex.sprint(i)
+          end
+        else
+          local b=e-2-math.min(e,#3)
+          local w=1+math.min(e,#3)
+          inp:seek("set",b)
+          local r=inp:read(w)
+          sep=""
+          for i,_ in string.bytes(r)
+          do
+          tex.sprint(sep)
+          sep=","
+          tex.sprint(i)
+          end
+        end
+      }%
+    }%
+  }{%
+    \long\edef\novelbytesare{%
+      \directlua{
+        inp = assert(io.open("#1", "rb"))
+        local e=inp:seek("end")
+        if #2>e then tex.sprint(-1) else
+          local w=math.min(#3,e-#2)
+          inp:seek("set",#2)
+          local r=inp:read(w)
+          sep=""
+          for i,_ in string.bytes(r)
+          do
+          tex.sprint(sep)
+          sep=","
+          tex.sprint(i)
+          end
+        end
+      }%
+    }%
+  }%
+} % end @novelgetbytes
+
+%%
+% png bit depth is 8 for ordinary color or gray, 1 for b/w monochrome.
+% Although png allows more than 8, `novel' does not.
+\def\novelpngbitdepth#1{\novelgetbytes{#1}{24}{1}\novelbytesare}
+% png color type: 0=grayscale (incl. b/w).
+% `novel' only permits colortype 0 for non-color book interiors.
+% other: 2=rgb, 3=indexed rgb, 4=gray alpha, 6=rgb alpha.
+\def\novelpngcolortype#1{\novelgetbytes{#1}{25}{1}\novelbytesare}
+%%
+
+%%
+% Examine png or jpg image for novel-make as comment:
+% Known-good images, will not be inspected. Comma-separated list:
+\newcommand\SetKnownGoodImages[1]{
+  \gdef\@KnownGoodImages{#1}
+}
+\SetKnownGoodImages{} % default empty
+\gdef\@AllGoodImages{}
+\gdef\@UnknownImages{}
+%
+\gdef\@GatherGoodImages{% called \AtBeginDocument by `novel.cls'.
+  \let\SetKnownGoodImages\relax
+  \xdef\@AllGoodImages{\@KnownGoodImages\space \@AllGoodImages}
+  \if@pdfxSEToff
+    \xdef\@AllGoodImages{\@KnownGoodImages}
+    \xdef\@UnknownImages{}
+  \fi
+}
+% This is the (decimal) code string:
+\gdef\@novelmake{110,111,118,101,108,109,97,107,101}
+%
+\newcommand\@NovelInspectImage[1]{%
+  \StrRight{#1}{3}[\tempEXT]%
+  \ifthenelse{\equal{\tempEXT}{png} \OR \equal{\tempEXT}{PNG}}{%
+    \novelgetbytes{#1}{e}{256}%
+  }{% jpg or JPG:
+    \novelgetbytes{#1}{0}{256}%
+  }%
+  \IfSubStr{\novelbytesare}{\@novelmake}{%
+    \xdef\@AllGoodImages{\@AllGoodImages\space #1}%
+  }{%
+    \xdef\@UnknownImages{\@UnknownImages\space #1}%
+  }%
+}
+%%
+
+
+%% Called \AfterEndDocument by `novel.cls`:
+\long\gdef\@WarnUnknownImages{%
+  \@tempTFfalse%
+  \ifthenelse{\equal{\@UnknownImages}{}}{}{\@tempTFtrue}%
+  \if@pdfxSEToff\@tempTFfalse\fi%
+  \if@tempTF%
+      \typeout{^^JClass `novel' Alert: Some images not processed by scripts.^^J%
+       \space List of unprocessed images: \@UnknownImages ^^J%
+       \space Above list does not include any `known good' set by you. ^^J^^J}%
+      \ClassWarning{novel}{\@testintentional %
+      Some images may not meet PDF/X specifications. ^^J%
+      See near end of log file for `Some images not processed by scripts`. ^^J}%
+  \fi%
+}
+%%
+
+
+
+%%
+\endinput
+%%
+%% End of file `novel-Images.sty'.
+
+

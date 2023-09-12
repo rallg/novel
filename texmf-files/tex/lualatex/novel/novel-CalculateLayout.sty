@@ -1,0 +1,306 @@
+%% This is file `novel-CalculateLayout.sty', part of `novel' document class.
+%% Copyright 2017-2023 Robert Allgeyer.
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%% License URL:  https://www.latex-project.org/lppl/lppl-1-3c/ 
+%%
+\ProvidesFile{novel-CalculateLayout.sty}%
+[2023/08/26 v1.82 LaTeX file (layout calculations)]
+%%
+
+%%
+%% This file is loaded \AtEndPreamble, which precedes \AtBeginDocument.
+%%
+
+
+
+%% PROVIDE DEFAULT TRIM SIZE, MARGINS, AND NORMAL EM SIZE, IF NOT SET BY USER
+%% ----------------------------------------------------------------------------
+% Default Trim Size is 5.5in W x 8.5in H, unless \SetTrimSize used.
+% This size is typical of American P.O.D. softcover fiction:
+\if@SetTrimSize\else
+  \gsetlength\@TrimWidth{5.5in}
+  \gsetlength\@TrimHeight{8.5in}
+\fi
+% Default margins based on Trim Height, unless \SetMargins used:
+\if@SetMargins\else
+  \ifdimcomp{\@TrimHeight}{<}{8.99in}{ % small sizes:
+    \gsetlength\@TopMargin{0.5in}
+    \gsetlength\@OuterMargin{0.5in}
+    \gsetlength\@BottomMargin{0.5in}
+    \gsetlength\@InnerMargin{0.75in}
+  }{ % medium sizes:
+    \ifdimcomp{\@TrimHeight}{<}{9.99in}{ %
+      \gsetlength\@TopMargin{0.75in}
+      \gsetlength\@OuterMargin{0.75in}
+      \gsetlength\@BottomMargin{0.75in}
+      \gsetlength\@InnerMargin{1in}
+    }{ % large sizes:
+      \gsetlength\@TopMargin{1in}
+      \gsetlength\@OuterMargin{1in}
+      \gsetlength\@BottomMargin{1in}
+      \gsetlength\@InnerMargin{1.25in}
+    } %
+  } %
+\fi
+% Default normal em size is based on Trim Width:
+\if@FontSizeSet\else
+  \ifdimcomp{\@TrimWidth}{<}{5.49in}{
+    \gsetlength\@SetFontSize{11pt} % smaller books
+  }{
+    \ifdimcomp{\@TrimWidth}{<}{6.24in}{
+      \gsetlength\@SetFontSize{11.4pt} % medium books
+    }{
+      \gsetlength\@SetFontSize{12pt} % larger books
+    } %
+  } %
+\fi
+%% end set default trim, margins, normal em size.
+
+
+%% THEORY OF PAGE LAYOUT
+%% ----------------------------------------------------------------------------
+% The "available width" is the trim width minus the outer and inner margins:
+\newlength\@AvailableWidth
+\gsetlength\@AvailableWidth{\@TrimWidth-\@OuterMargin-\@InnerMargin}
+% The "occupied width" of the text block is the TeX dimension \textwidth.
+%   Your originally set layout can always fill the available width.
+\gsetlength\textwidth{\@AvailableWidth}
+% The "available height" is the trim height minus the top and bottom margins:
+\newlength\@AvailableHeight
+\gsetlength\@AvailableHeight{\@TrimHeight-\@TopMargin-\@BottomMargin}
+% The "occupied height" includes header, textblock, footer, and allowances
+%   for risers/diacriticals at top, descenders at bottom. It must fit within
+%   the available height. This is the tricky part, so pay attention:
+% In `novel' class, the topmost line of text (main block or header)
+%   is positioned with its baseline at 1 normal em below available top.
+%   That provides good clearance for uppercase letters with diacritical marks.
+% The lowermost line of text (main block or footer) is positioned with its
+%   baseline at 0.3 normal em above available bottom. This provides
+%   good clearance for descenders.
+% So, if your text does not have uppercase diacriticals, or if you use
+%   a footer with lining numbers (no descenders), then the upper/lower margins
+%   will appear to be a little larger than you set them.
+% The headjump includes the line itself, plus any added gap to the main text.
+%   An unused jump is re-set to 0:
+\if@HasHeader\else\gdef\@HeadJump{0}\fi
+%%
+% TeX assumes that your layout has a footer, even if you do not want one.
+%   Novel handles this by setting the baseline of the mandatory footer at
+%   1 normal baselineskip below the last line of main text. Then, one line is
+%   subtracted from the occupied line count. That places the empty, unused
+%   virtual footer in the lower margin, where it does not matter. When you
+%   do have a footer, the necessary line space is added, and the content
+%   is positioned from the virtual footer using \smash and \raisebox.
+%   Yes, it is complicated, but it handles more layout possibilities.
+%   The \@FootJumpFix is one less than \@FootJump, or -1 when no footer:
+\if@HasFooter
+  \FPsub\@FootJumpFix{\@FootJump}{1}
+\else
+  \gdef\@FootJumpFix{-1}
+\fi
+% Putting it all together, the "occupied height" is:
+%   1.3\@SetFontSize + (\@HeadJump+\@LinesPerPage+\@FootJumpFix)\baselineskip
+%
+%% end theory of page layout.
+
+
+%% SET DEFAULT LINES PER PAGE, IF NOT SET BY USER
+%% ----------------------------------------------------------------------------
+% Lines per page refers only to the main text block, not header/footer:
+\if@LinesPerPage\else
+  % Estimate \baselineskip as 1.3\@SetFontSize, which is a comfortable value.
+  % Calculate resulting \@LinesPerPage, then proceed as if set.
+  % Actual \baselineskip will be re-calculated later.
+  \edef\@tempLPP{%
+    \fpeval{% package xfp
+      (\@AvailableHeight - 0.3\@SetFontSize) % adjusts for final descenders
+      / (1.3*\@SetFontSize) % denominator, with desired skip/em ratio
+      -\@HeadJump -\@FootJumpFix % adjustments
+    }%
+  } %
+  \FPtrunc{\@LinesPerPage}{\@tempLPP}{0} % final, integer floor
+\fi
+% Error if too few lines per page, whether set or default:
+\FPiflt{\@LinesPerPage}{2}
+  \ClassError{novel}{Calculated LinesPerPage less than 2}%
+   {Too few lines. Either font size too big, or text height too small.}%
+\fi
+%% end set default lines per page.
+
+
+%% CALCULATE BASELINESKIP
+%% ----------------------------------------------------------------------------
+% In `novel' class, the user does not directly set line-to-line spacing,
+%   known as \baselineskip. Instead, \baselineskip is calculated from other
+%   settings, so that "occupied height" fills "available height."
+% See the above theory of layout, for the equations. Solve for \baselineskip =
+%   (\@AvailableHeight-1.3\@SetFontSize)  divided by
+%   (\@HeadJump+\@LinesPerPage+\@FootJumpFix)
+%
+\xdef\@AdjLPP{\fpeval{\@HeadJump+\@LinesPerPage+\@FootJumpFix}} % used often
+\edef\@tempBLS{%
+  \fpeval{(\@AvailableHeight-1.3\@SetFontSize) / \@AdjLPP}%
+} %
+\FPtrunc\@tempBLS{\@tempBLS}{2} % round down to 2 decimalplaces
+\gsetlength\baselineskip{\@tempBLS pt}
+%
+% Error if \baselineSkip is too tight, in relation to normal em size:
+\ifdimcomp{\baselineskip}{<}{1.2\@SetFontSize}{%
+  \ClassError{novel}{Calculated baselineskip is too small}%
+   {Default baselineskip is calculated from normal em size, ^^J%
+     available text height, and lines per page. Result is too small. ^^J%
+    Change something, then try again.}%
+}{}%
+%% end calculate baselineskip.
+
+
+%% FINISH LAYOUT (but post-layout deals with special class options)
+%% ----------------------------------------------------------------------------
+% Caution if font size is small:
+\ifdimcomp{\@SetFontSize}{<}{10pt}{ %
+  \typeout{^^JClass `novel' Alert: Normal font at less than 10pt. ^^J%
+    Whether or not this is too small, depends on circumstances. ^^J%
+    Beware if you use footnotes, which are smaller. ^^J%
+  }
+}{} %
+\ifdimcomp{\@SetFontSize}{<}{8.03pt}{ % 8 PostScript points (TeX bp)
+  \ClassWarning{novel}{^^JNormal font at less than 8 points. ^^J%
+    This is usually undesirable. May be rejected by some print services. ^^J%
+  }
+}{} %
+% Default Media Size is same as Trim Size, unless \SetMediaSize used:
+\if@MediaSize\else
+    \gsetlength\paperwidth{\@TrimWidth}
+    \gsetlength\paperheight{\@TrimHeight}
+\fi
+% Sanity check for cover art, which needs bleed:
+\if@coverart
+  \setlength\@tempLength{\paperwidth-\@TrimWidth}
+  \ifthenelse{\dimtest{\@tempLength}{<}{6mm}}{%
+    \ClassWarning{novel}{^^JBIG BAD WARNING! Insufficient bleed width ?^^J%
+    Commercial printers generally require 0.125in (3mm) bleed,^^J%
+    on all four sides of the Trim. But your dimensions do not provide this.^^J%
+    Perhaps you need to increase the Media Width ?^^J}
+  }{}
+  \ifthenelse{\dimtest{\@tempLength}{>}{0.5in}}{%
+    \ClassWarning{novel}{^^JBIG BAD WARNING! Too much bleed width ?^^J%
+    Commercial printers generally require 0.125in (3mm) bleed,^^J%
+    on all four sides of the Trim. Sometimes as much as 0.25in (6mm) each.^^J%
+    But your dimensions provide more than this.
+    Perhaps you need to decrease the Media Width ?^^J}
+  }{}
+  \setlength\@tempLength{\paperheight-\@TrimHeight}
+  \ifthenelse{\dimtest{\@tempLength}{<}{5.83mm}}{% allows for pixel rounding
+    \ClassWarning{novel}{^^JBIG BAD WARNING! Insufficient bleed height ?^^J%
+    Commercial printers generally require 0.125in (3mm) bleed,^^J%
+    on all four sides of the Trim. But your dimensions do not provide this.^^J%
+    Perhaps you need to increase the MediaSize ?^^J}
+  }{}
+  \ifthenelse{\dimtest{\@tempLength}{>}{0.507in}}{% allows for pixel rounding
+    \ClassWarning{novel}{^^JBIG BAD WARNING! Too much bleed height ?^^J%
+    Commercial printers generally require 0.125in (3mm) bleed,^^J%
+    on all four sides of the Trim. Sometimes as much as 0.25in (6mm) each.^^J%
+    But your dimensions provide more than this.
+    Perhaps you need to decrease the MediaSize ?^^J}
+  }{}
+\fi
+% \textheight, normal font size, etc:
+\gsetlength\textheight{\@LinesPerPage\baselineskip}
+\renewcommand\normalsize{%
+  \@setfontsize\normalsize{\strip@pt\@SetFontSize}{\strip@pt\baselineskip}%
+}
+\normalsize % from this point, the "real" normal font size is effective
+%
+
+%
+\if@HasHeader
+  % \headheight is mis-named. Text "height" is supposed to be measured upward
+  %   from the baseline. But \headheight is measured from 0.3em below
+  %   the baseline, to allow for descenders. Thus, to provide actual "height"
+  %   of 1em, \headheight must be set to 1.3em:
+  \gsetlength\headheight{1.3\@SetFontSize}
+  % \headsep is a confusing term. It is the separation between the nominal
+  %   0.3em descenders of header text, and one baseline above the baseline
+  %   of the top line of main text. Got that? Let me do the thinking for you:
+  \gsetlength\headsep{\@HeadJump\baselineskip-\baselineskip-0.3\@SetFontSize}
+\else % no header, no problem:
+  \gsetlength\headheight{0pt}
+  \gsetlength\headsep{0pt}
+\fi
+% \oddsidemargin is at the left (inner, spine edge) of recto pages.
+% Measured 1in (72.27pt) inside MediaBox, to the textblock. May be negative.
+
+  \gsetlength\oddsidemargin{%
+    \@InnerMargin+0.5\paperwidth-0.5\@TrimWidth-72.27pt%
+  }
+
+%
+% \evensidemargin is at the left (outer edge) of verso pages.
+
+  \gsetlength\evensidemargin{%
+    \@OuterMargin+0.5\paperwidth-0.5\@TrimWidth-72.27pt%
+  }
+
+%
+\if@closecrop
+  \gsetlength\oddsidemargin{-0.9in}
+  \gsetlength\evensidemargin{-0.9in}
+\fi
+%
+% \topmargin is measured from 1in (72.27pt) below the top of the MediaBox,
+%   to the top of whatever comes first (header or textblock). May be negative.
+% For consistency, the topmost baseline (header or main text) will be
+%   positioned at 1em below the margin.
+
+  \gsetlength\topmargin{\@TopMargin+0.5\paperheight-0.5\@TrimHeight-72.27pt}
+  \if@HasHeader\else
+    \gsetlength\topmargin{\topmargin-\baselineskip+\@SetFontSize}
+  \fi
+
+% novel.cls sets a tentative em size (probably 10pt) so that packages requiring
+%   an integer point size of 10, 11, or 12 will load without complaint.
+% Then, the real point size is established here, when it is too late for
+%   such packages to complain. Sneaky, eh?
+% However, TeX places a strut in the header, rising 0.7x tentative size above
+%   the header baseline. If the real size is too small, then the strut is
+%   too large, which displaces the header text downward, simultaneously
+%   shrinking the headsep and possibly affecting the textblock position.
+% This unlikely problem cannot be fixed by adjusting the headheight, but it
+%   can be fixed by adjusting the topmargin and headsep to compensate:
+\ifdimcomp{\@SetFontSize}{<}{\@TentativeEmN pt}{ %
+  \setlength\@tempLength{\@TentativeEmN pt}
+  \gsetlength\topmargin{\topmargin-0.7\@tempLength+0.7\@SetFontSize}
+  \gsetlength\headsep{\headsep+0.7\@tempLength-0.7\@SetFontSize}
+}{} %
+%%
+% It seems that, unless specified by user, TeX may place the top text baseline
+%   in a vertical position that depends on the height of text in that line.
+% That height may vary, depending on ascenders or diacriticals there.
+% In order to fix the position, \topskip gets a non-flexible setting.
+% The best value is normal baselineskip, partly because it looks right,
+%   and also to avoid underfull vboxes on nearly every page.
+\gsetlength\topskip{\baselineskip} % absorber
+% In `novel' class, footers are done in an unusual manner, as explained above.
+% To fix the position of the virtual footer baseline:
+\gsetlength\footskip{\baselineskip}
+%% Sanity check: Trim Size must be contained within Media Size.
+\ifthenelse{%
+  \dimtest{\@TrimWidth}{>}{\paperwidth} %
+  \OR \dimtest{\@TrimHeight}{>}{\paperheight}%
+}{%
+  \ClassError{novel}{Media Size too small for TrimSize}%
+  {You wrote \string\SetMediaSize\space with length(s) too small ^^J%
+   for the default Trim Size or your values in \string\SetTrimSize.}%
+}{} %
+% end sanity check
+%% end finish layout.
+
+
+%%
+\endinput
+%%
+%% End of file `novel-CalculateLayout.sty'.
+
+

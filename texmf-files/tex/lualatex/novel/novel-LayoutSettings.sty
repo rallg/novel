@@ -1,0 +1,412 @@
+%% This is file `novel-LayoutSettings.sty', part of `novel' document class.
+%% Copyright 2017-2023 Robert Allgeyer.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, version 1.3c.
+%% License URL:  https://www.latex-project.org/lppl/lppl-1-3c/
+%%
+\ProvidesFile{novel-LayoutSettings.sty}%
+[2023/08/26 v1.82 LaTeX file (layout settings)]
+%%
+
+
+%% Note that nearly all layout settings are pre-configured based on Trim Size.
+%% In general, these user commands may be used to over-ride the presets.
+
+
+
+%% SIZE-RELATED COMMANDS AVAILABLE IN PREAMBLE.
+%% ----------------------------------------------------------------------------
+%% Use if necessary for customization.
+%% If you like a class option that pre-sets these values,
+%%   then you do not have to use any of these commands.
+%
+% Note: This class does not ask you to set the width/height of the textblock.
+%   Instead, these values are automatically calculated from other dimensions.
+
+
+%% Trim Size is the finished width and height of the book (not thickness).
+% Books are (usually) manufactured to a small number of standard Trim Sizes.
+% The available choice of sizes will depend on your print service,
+%   and may by limited by binding method, paper, or distribution channels.
+% These are NOT the usual TeX "paper size" choices, such as A4 or letterpaper.
+% In the U.S.A., 5.5in W x 8.5in H is very common for softcover fiction,
+%   so it will (later) be set as default, unless you set your own.
+\newif \if@SetTrimSize % true if \SetTrimSize rather than defaults.
+\newlength\@TrimWidth
+\newlength\@TrimHeight
+\newcommand\SetTrimSize[2]{% width, height
+  \global\@SetTrimSizetrue
+  \gsetlength\@TrimWidth{#1}
+  \gsetlength\@TrimHeight{#2}
+}% end set trimsize
+%%
+
+
+%% Margins are measured from Trim Size inwards, always positive.
+% If the Media Size is larger than Trim Size, then the area beyond
+%   the Trim Size is NOT margins. It is discarded scrap paper.
+% However, word processors (in general) do not understand the difference
+%   between Trim Size and Media Size. So, if you are ever asked to
+%   lay out the book in a word processor, using a standard (A4 or letter)
+%   physical paper size, then you will be asked to set the "margins"
+%   very wide, because the word processor margins include both
+%   the finished book margins, and the discarded scrap paper.
+% In certain circumstances, text or images may intrude into the margin area.
+%   This is not always an error, because it may be intentional.
+% Margins at top and bottom are relative to:
+%   top of header, or top of textblock if no header;
+%   bottom of footer, or bottom of textblock if no footer.
+% Inner margin generally greater than Outer, due to gutter.
+% Standard margins command ("TOBI, or not TOBI, that is the question."):
+\newif \if@SetMargins % true if \SetMargins rather than defaults.
+\newlength\@TopMargin
+\newlength\@OuterMargin
+\newlength\@BottomMargin
+\newlength\@InnerMargin
+\newcommand\SetMargins[4]{ % top, outer, bottom, inner
+  \global\@SetMarginstrue
+  \gsetlength\@TopMargin{#1}
+  \gsetlength\@OuterMargin{#2}
+  \gsetlength\@BottomMargin{#3}
+  \gsetlength\@InnerMargin{#4}
+}% end set margins
+\LetLtxMacro\SetMargin{\SetMargins}\relax % for those who mis-type
+%%
+
+
+%% Unsafe Zone (opposite of "safe area").
+% This feature only applies with class options `draft,shademargins'
+%   and does NOT apply in `coverart'.
+% The purpose of margins is to confine the main text (and header/footer).
+% In `novel' (unlike most other TeX document classes) there is no provision
+%   for marginal notes, because they are not used in popular fiction.
+% Yet there may be circumstances where you intentionally or accidentally
+%   have text, or part of an image, placed or overflowing into a margin.
+% In PDF, even PDF/X, that is not a problem. It cannot read your mind.
+% However, every print service specifies a "safe area." All text, and
+%   all images without bleed, must remain within the safe area.
+% The limits of the safe area are typically 0.125in to 0.5in inside the
+%   Trim Size, depending on technology. This defines how close you may
+%   place anything near the page edges.
+% In `novel' the opposite of the safe area is the "unsafe zone" (UZ).
+%   So, the UZ lies just inside the perimeter of the Trim Size.
+% Each margin is at least as wide as its corresponding UZ.
+%   Some print services use "minimum margin" to mean the UZ.
+% When you are in draft mode with `shademargins' class option,
+%   the UZ (if it is set) will be displayed in dark gray.
+%   Then, you can inspect the PDF for any intrusion into the UZ.
+% If you intrude into the UZ, there is no warning or error.
+%   The UZ is strictly for visualization. There is no default setting.
+%   If you do not set the UZ yourself, then no UZ will be displayed.
+% In any case, the final PDF is unaffected.
+\newif \if@UnsafeZone % true if \SetUnsafeZone used
+\newlength\@TopUZWidth
+\newlength\@OuterUZWidth
+\newlength\@BottomUZWidth
+\newlength\@InnerUZWidth
+\newcommand\SetUnsafeZone[4]{% top, outer, bottom, inner.
+  \global\@UnsafeZonetrue
+  \gsetlength\@TopUZWidth{#1}
+  \gsetlength\@OuterUZWidth{#2}
+  \gsetlength\@BottomUZWidth{#3}
+  \gsetlength\@InnerUZWidth{#4}
+} % end \SetUnsafeZone
+\LetLtxMacro\SetUnsafeZones{\SetUnsafeZone}\relax % for those who mis-type
+%%
+
+
+% PDF Media Size is already known to TeX as \paperwidth and \paperheight.
+%   For this reason, there is no need to define additional lengths.
+% Sheet-fed printers use a small number of standard paper sizes.
+%   Whether you use P.O.D. or print at home or office, your print job will
+%   almost certainly be sheet-fed. After printing, the sheet is trimmed
+%   to the specified Trim Size. Note that the sheet sizes used in
+%   commercial printing are specialized for the purpose, and may be
+%   different from the routine A4 and USletter sizes familiar to you.
+% In most cases (except for cover artwork), your PDF Media Size will be
+%   exactly the same as the finished Trim Size. Placement of the Trim Size
+%   onto a larger sheet of paper is done automatically at the print service,
+%   a procedure known as "imposition." Several small Trim Sizes may be
+%   printed onto a single sheet, in order to waste less paper in trimming.
+% In a few cases, the print service will ask you to provide a PDF that has
+%   the Trim Size centered H/V within a larger Media Size.
+%   Sometimes (especially for cover artwork), that's because you are
+%   doing the imposition yourself. In other cases (especially for interiors)
+%   it is because most of the files seen at the print service came from
+%   word processors, where the writers (not knowing better) created layouts
+%   on A4 or USletter with large "margins," rather than correct Trim Size.
+%   Then, if you submit a file at actual Trim Size, it looks wrong,
+%   not because it is wrong, but because it stands out from the crowd.
+% You may use \SetMediaSize to deal with this situation.
+% You do not need \SetMediaSize, if (as usual) it is identical to TrimSize.
+%   Changing the Media Size does not affect Trim Size or internal page layout.
+% Class options `cropview' and `closecrop' (only in draft mode)
+%   affect Media Size. See their descriptions below.
+%
+% \SetMediaSize{width}{height} usage:
+\newif \if@MediaSize % true if \SetMediaSize rather than default = Trim Size.
+\DeclareDocumentCommand\SetMediaSize { m m } {% width, height
+  \@MediaSizetrue
+  \gsetlength\paperwidth{#1}
+  \gsetlength\paperheight{#2}
+}% end \SetMediaSize
+%%
+
+
+%% Lines Per Page refers to the main textblock, not including header or footer.
+% If you do not set it, a suitable default will be based on other settings.
+% The number of lines is contrained by Trim Height, Margins, and normal em.
+%   This is because the minimum \baselineskip must be 1.2x normal em size,
+%   to avoid crowding of the text and variable line heights.
+% The check for constraint is done in file novel-CalculateLayout.sty.
+%   The same check also verifies that the number is an integer >=10.
+\newif \if@LinesPerPage % true if \SetLinesPerPage rather than default.
+\newcommand\SetLinesPerPage[1]{
+  \IfInteger{#1}{}{%
+    \ClassError{novel}{\string\SetLinesPerPage\space must be integer >=10}%
+     {Do not write period, comma, or space within \string\SetLinesPerPage.}%
+  }
+  \FPiflt{#1}{10}
+    \ClassError{novel}{\string\SetLinesPerPage\ must be at least 10}%
+      {LinesPerPage were set or calculated at less than 10.}%
+  \fi
+  \global\@LinesPerPagetrue
+  \gdef\@LinesPerPage{#1}
+}% end set linesperpage
+%%
+
+
+%% \SetFontSize may be in any units, even decimals: 12.2pt, 11.5bp, etc.
+% Before external packages load, the font size is temporarily set to
+%   10pt at 13pt skip, so that moldy-oldie packages don't get confused.
+% Later, the size is changed to its actual value based on this command,
+%   or on the defaults for Trim Size.
+\newif \if@FontSizeSet % true if \SetFontSize rather than default.
+\newlength\@SetFontSize
+\newcommand\SetFontSize[1]{
+  \global\@FontSizeSettrue
+  \gsetlength\@SetFontSize{#1}
+}% end set font size
+%%
+
+
+%% MISCELLANOUS SETTINGS. Mostly remove "glue". Best to leave as-is.
+%% ----------------------------------------------------------------------------
+% Standard TeX \hoffset and \voffset is not relative to the MediaBox, but is
+%   relative to 1in from the top left corner of the MediaBox. Ouch.
+% When necessary, the 1in (72.27pt) is compensated in later calculations.
+\setlength\hoffset{0pt} % relative to 1in built-in offset at left
+\setlength\voffset{0pt} % relative to 1in built-in offset at top
+%
+\@twocolumnfalse
+\@twosidetrue
+\setlength\columnsep{12pt} % not needed, picked something at random
+\setlength\columnseprule{0pt}
+%
+\@mparswitchtrue % irrelevant
+\setlength\marginparwidth{0pt} % no marginal paragraphs allowed
+\setlength\marginparsep{0pt}
+\setlength\marginparpush{0pt}
+%
+\global\@topnum \z@
+\setlength\abovedisplayskip{0pt}
+\setlength\abovedisplayshortskip{0pt}
+\setlength\belowdisplayshortskip{0pt}
+\setlength\belowdisplayskip{0pt}
+\setlength\smallskipamount{0pt}
+\setlength\medskipamount{0pt}
+\setlength\bigskipamount{0pt}
+% `novel' uses grid setting. However, to allow for roundoff errors in
+% vertical position calculations, there is a tiny amount of wiggle room:
+\setlength\topsep{0pt}
+\setlength\partopsep{0pt}
+\setlength\parsep{0pt}
+\setlength\parskip{0pt}
+\setlength\floatsep{0pt}
+\setlength\textfloatsep{0pt}
+\setlength\dbltextfloatsep{0pt}
+\setlength\intextsep{0pt}
+% \topskip will be set as normal baselineskip, which must first be calculated.
+% That is done in novel-CalculateLayout.sty.
+\setlength\lineskip{0pt}
+\setlength\normallineskip{0pt}
+\setlength\lineskiplimit{-2pt} % allows some limited vertical clash
+\renewcommand\baselinestretch{1} % multiplier
+\widowpenalty 150 % same as TeX default
+\clubpenalty 150 % same as TeX default
+\@lowpenalty   51
+\@medpenalty  151
+\@highpenalty 301
+% Floats are limited, but just in case:
+\setcounter{topnumber}{2}
+\renewcommand\topfraction{.7}
+\setcounter{bottomnumber}{1}
+\renewcommand\bottomfraction{.3}
+\setcounter{totalnumber}{3}
+\renewcommand\textfraction{.2}
+\renewcommand\floatpagefraction{.5}
+\setcounter{dbltopnumber}{2}
+\renewcommand\dbltopfraction{.7}
+\renewcommand\dblfloatpagefraction{.5}
+%
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\normalfont\rmfamily}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\normalfont\sffamily}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\normalfont\ttfamily}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\normalfont\bfseries}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\normalfont\itshape}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\normalfont\slshape}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\normalfont\scshape}
+%
+\pagestyle{empty} % will be over-ridden by fancyhead in separate file
+\pagenumbering{arabic} % may be over-ridden in document
+\flushbottom % best for continuous text
+%
+%% End miscellaneous settings.
+
+
+
+%% FRONTMATTER, MAINMATTER. BUT NO BACKMATTER!
+%% ----------------------------------------------------------------------------
+%
+% See novel.cls for the AtBeginShipout routine.
+%
+% These do not have @ in name, so that they can be used in document body:
+\newif \ifWithinFrontmatter % true within frontmatter
+\newif \ifWithinMainmatter % true within mainmatter
+\def\frontmatter{ % starts page count and frontmatter count at 1.
+  \ifWithinFrontmatter
+    \ClassError{novel}{\string\frontmatter\ used more than once}%
+    {You issued \string\frontmatter\ more than once.}%
+  \fi
+  \ifWithinMainmatter
+   \ClassError{novel}{\string\frontmatter\ cannot follow \mainmatter}%
+   {In order: \string\frontmatter\ \string\mainmatter ^^J%
+    but you do not need both of them.}%
+  \fi
+  \global\WithinFrontmattertrue\global\WithinMainmatterfalse
+  \clearpage
+  \pagenumbering{roman}
+  \setcounter{page}{1}
+}
+%
+\def\mainmatter{ % restarts page to 1, arabic numbers; freeze frontpagecount
+  \ifWithinMainmatter
+    \ClassError{novel}{\string\mainmatter\ used more than once}%
+    {You issued \string\mainmatter\ more than once.}%
+  \fi
+  \cleartorecto
+  \global\WithinFrontmatterfalse\global\WithinMainmattertrue
+  \pagenumbering{arabic}
+  \setcounter{page}{1}
+}
+%
+\def\backmatter{\@ifstar\@backmatterst\@backmatterns}
+\def\@backmatterns{%
+  \cleartorecto%
+  \typeout{^^JClass `novel' Alert: \string\backmatter\space merely %
+    clears to recto. See docs. ^^J}%
+}
+\let\@backmatterst\@backmatterns
+%% end frontmatter, mainmatter. No backmatter!
+
+
+%% DISABLE OR NEUTRALIZE SOME STANDARD LATEX COMMANDS
+%% ----------------------------------------------------------------------------
+% The `novel' class disallows these commands, or neutralizes them by simply
+% repeating their arguments. In some cases, they request functionality that's
+% not implemented in `novel'. In other cases, functionality is part of core,
+% but would interfere with the `novel' emphasis on constant line skip.
+% You may redefine the commands using your own Preamble code (discouraged).
+%
+%%%%%\gdef\null{\hbox{\strut}} % May be important!
+%
+% Standard LaTeX font sizes are ineffective:
+\gdef\@noSizeCommand#1{\ClassWarning{novel}{%
+  Standard LaTeX font sizes are ineffective in `novel' class. ^^J%
+  Your use of command `#1' was ignored. ^^J}%
+}
+\gdef\@DisableFontSizes{% called by `novel.cls' \AtBeginDocument
+  \gdef\HUGE{\@noSizeCommand{HUGE}}
+  \gdef\Huge{\@noSizeCommand{Huge}}
+  \gdef\huge{\@noSizeCommand{huge}}
+  \gdef\LARGE{\@noSizeCommand{LARGE}}
+  \gdef\Large{\@noSizeCommand{Large}}
+  \gdef\large{\@noSizeCommand{large}}
+  \gdef\small{\@noSizeCommand{small}}
+  \gdef\footnotesize{\@noSizeCommand{footnotesize}}
+  \gdef\scriptsize{\@noSizeCommand{scriptsize}}
+  \gdef\tiny{\@noSizeCommand{tiny}}
+} %
+% In `novel' there is no academic organization.
+% All these do is echo the argument, if any:
+\long\gdef\part#1{#1}
+\long\gdef\chapter#1{#1}
+\long\gdef\section#1{#1}
+\long\gdef\subsection#1{#1}
+\long\gdef\subsubsection#1{#1}
+\long\gdef\paragraph#1{#1}
+\long\gdef\subparagraph#1{#1}
+\long\gdef\appendix#1{#1}
+% In some situations, the use will be interrupted:
+\DeclareDocumentCommand\@nodocommand { O{} +m } {%
+  \ClassError{novel}{No command or environment `#1' in this class}%
+   {Many academic layout commands or environments are disabled in `novel'.}%
+}
+\DeclareDocumentCommand\@sandboxonly { m } {%
+  \ClassError{novel}{ ^^J%
+   Command or environment `#1' only allowed in `sandbox' mode. ^^J%
+   See `novel' documentation 2.2. ^^J
+   The offending command may have been called by another macro.}%
+   {Fix your code. If you do not, then compile will fail or be unexpected.}%
+}
+% Here is the interruption list:
+\long\gdef\maketitle{\@nodocommand{maketitle}}
+\long\gdef\makeindex{\@nodocommand{makeindex}}
+\long\gdef\tableofcontents{\@nodocommand{tableofcontents}}
+\long\gdef\listoftables{\@nodocommand{listoftables}}
+\long\gdef\listoffigures{\@nodocommand{listoffigures}}
+\long\gdef\thebibliography{\@nodocommand{thebibliography}}
+\long\gdef\theindex{\@nodocommand{theindex}}
+\long\gdef\abstract{\@nodocommand{abstract}}
+\if@sandbox\else
+  \DeclareDocumentCommand\caption{}{\@sandboxonly{caption}}
+  \DeclareDocumentEnvironment{tabular}{s o +m}{\@sandboxonly{tabular}}{}
+  \DeclareDocumentEnvironment{table}{s o}{\@sandboxonly{table}}{}
+  \DeclareDocumentEnvironment{figure}{s o}{\@sandboxonly{figure}}{}
+  \DeclareDocumentEnvironment{itemize}{s}{\@sandboxonly{itemize}}{}
+  \DeclareDocumentEnvironment{enumerate}{s}{\@sandboxonly{enumerate}}{}
+  \DeclareDocumentEnvironment{description}{s}{\@sandboxonly{description}}{}
+  \DeclareDocumentEnvironment{labeling}{s}{\@sandboxonly{labeling}}{}
+\fi
+%
+\newif \if@OnTitlePage % not really useful
+\DeclareDocumentEnvironment{titlepage}{s}{%
+  \clearpage
+  \thispagestyle{empty}
+  \global\@OnTitlePagetrue
+}{
+  \clearpage
+  \global\@OnTitlePagefalse
+}
+%% end disable or neutralize.
+
+
+%% Neutralize settings commands:
+\gdef\@DisableLayoutSettings{% called by `novel.cls' \AtBeginDocument
+  \LetLtxMacro\SetMediaSize\relax
+  \LetLtxMacro\SetTrimSize\relax
+  \LetLtxMacro\SetMargins\relax
+  \LetLtxMacro\SetLinesPerPage\relax
+  \LetLtxMacro\SetFontSize\relax
+  \LetLtxMacro\SetUnsafeZone\relax
+}% end \@DisableLayoutSettings
+%%
+
+
+%%
+\endinput
+%%
+%% End of file `novel-LayoutSettings.sty'.
+
+
