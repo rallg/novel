@@ -8,9 +8,9 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 % Actually needs LuaLaTeX, at least version 0.95 from TeXLive 2016.
-\ProvidesClass{novel}[2023/08/26 v1.82 LaTeX document class]
+\ProvidesClass{novel}[2023/11/09 v1.83 LaTeX document class]
 %%
-%% Version 1.82: Added user-set indent.
+%% Version 1.83: Minor typo corrected.
 
 %% In addition to a minimal LaTeX setup, with luatex, you will need these:
 %% textpos magaz xcolor adjustbox eso-pic pdfpages unicode-math fp iftex
@@ -79,7 +79,7 @@
 \WarningsOff[Fancyhdr,fancyhdr] % complains about headheight when no header
 \RequirePackage[relative]{textpos} % for inserting images
 \RequirePackage{calc} % allows length expression calculations
-\RequirePackage{atbegshi} % in oberdiek bundle. For one-page header changes. Also used by hyperref.
+\RequirePackage{atbegshi} % in oberdiek bundle. For one-page header changes.
 \RequirePackage{letltxmacro} % in oberdiek bundle. For re-defining some macros
 \RequirePackage{xparse} % for writing cool-looking commands
 %
