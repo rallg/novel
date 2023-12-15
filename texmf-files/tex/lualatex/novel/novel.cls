@@ -8,9 +8,24 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 % Actually needs LuaLaTeX, at least version 0.95 from TeXLive 2016.
-\ProvidesClass{novel}[2023/11/09 v1.83 LaTeX document class]
+\ProvidesClass{novel}[2023/12/15 v1.84 LaTeX document class]
 %%
-%% Version 1.83: Minor typo corrected.
+%% Version 1.84: Possibly final update.
+
+
+%% DO NOT USE THIS DOCUMENT CLASS FOR NEW PROJECTS
+%% Although it has no "known" bugs, and works with TeXlive 2023,
+%% it will not longer be maintained. It may be unavailable in TeXlive 2024.
+%% If you already have projects that use this document class, no problem.
+%% Continue with what you were doing, and be sure to save a *.zip file of
+%% the entire package (with its documentation) somewhere. Then, if you upgrade
+%% TeXlive, and the package is not there, you can unzip into texmf-local,
+%% and manually update the TeX file list. Or, you may manually download from
+%% one of the mirrors that keeps older archives (2023 is best).
+%%   In 2024, the same developer hopes to have a new `novelette' document class
+%% available. It is not an `upgrade for novel' but is something entirely new.
+%% It may be better-suited to its intended purpose (printed popular fiction).
+
 
 %% In addition to a minimal LaTeX setup, with luatex, you will need these:
 %% textpos magaz xcolor adjustbox eso-pic pdfpages unicode-math fp iftex
