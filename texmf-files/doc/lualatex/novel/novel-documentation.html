@@ -210,7 +210,7 @@ function closeall() {
       <li><a href="#h2.5">2.5 cropview</a></li>
       <li><a href="#h2.6">2.6 closecrop</a></li>
       <li><a href="#h2.7">2.7 xml</a></li>
-      <li><a href="#h2.8">2.8 coverart</a></li>
+      <li><a href="#h2.8">2.8 coverart (deprecated)</a></li>
       <li><a href="#h2.9">2.9 developer options</a></li>
       <li><a href="#h2.10">2.10 revert</a></li>
     </ul>
@@ -588,7 +588,7 @@ function closeall() {
 
 <p class="noindent">The <i>novel</i> document class is for authors of text-intensive original fiction, such as detective novels, murder mysteries, romance, sci-fi, and collections of short stories. Academic works and graphic novels are excluded.</p>
 <p>The resulting PDF uses built-in technology to produce PDF/X compliant files for print-on-demand (P.O.D.) services. There is no capability for E-books, and never will be.</p>
-<p>To use <i>novel</i>, you need TeXLive 2016 or later, or recent MikTeX. Open your TeX package manager, and install both <i>novel</i> and <i>libertinus-fonts</i>.</p>
+<p>To use <i>novel</i>, you need TeXLive 2020 or later, or recent MikTeX. Open your TeX package manager, and install both <i>novel</i> and <i>libertinus-fonts</i>.</p>
 
 <p><b>New in version 1.82:</b> Preamble command <code>\myparindent{length}</code>
 will over-ride the default 1.5em as normal indent. Version 1.83: Minor typo corrected.
@@ -799,9 +799,12 @@ is not your default.</p>
 <p class="item" style="position:relative"><b>D.</b> <img src="html-resources/info18.png" width="18" height="18" style="position:relative; bottom:-3px" title="tech info" alt="tech info"/> Technical Info: XMP packet may be isolated by editing the *.xml file, in a plain text editor (requires utf-8). Necessary edits are obvious.</p>
 </div><!-- end 2.7 -->
 
-<h3 id="h2.8">2.8. coverart</h3>
+<h3 id="h2.8">2.8. coverart (deprecated)</h3>
 <div class="d3" id="d2.8">
-<p class="item">This option is only used for cover artwork. See <a href="#h7.1.2">section 7.1.2</a>.</p>
+<p class="item">This option is only used for cover artwork. However, in the intervening time
+since <i>novel</i> was first introduced, the printing technology has evolved.
+Now (late 2023) using <i>novel</i> technology is not the best way to produce
+your book cover file, although it still works. See <a href="#h7.1.2">section 7.1.2</a>.</p>
 </div><!-- end 2.8 -->
 
 <h3 id="h2.9">2.9. Developer Options</h3>
@@ -995,7 +998,8 @@ If it does not, the class option <code>revert</code> will undo the tweaks.</p>
 <p class="item"><b>C.</b> The second is widely used in Europe, the third in Japan.</p>
 </div><!-- end 3.4.3 -->
 
-<h4 id="h3.4.4">3.4.4. Other Output Intents</h4><div class="d4" id="d3.4.4">
+<h4 id="h3.4.4">3.4.4. Other Output Intents</h4>
+<div class="d4" id="d3.4.4">
 <p class="item"><b>A.</b> If you are required to use an Output Intent that is not one of the above three, then you have to code it yourself.</p>
 <p class="item"><b>B.</b> In a place where TeX can find it, create a plain text file with its file name in the following format:</p>
 <p class="code">File name begins with <code>novel-</code> (note the hyphen).</p>
@@ -1016,7 +1020,8 @@ If it does not, the class option <code>revert</code> will undo the tweaks.</p>
 <p class="item"><b>G.</b> Another place to look for Output Intent data is in your (texmf)/tex/latex/pdfx folder. This will be in your TeX system if package <i>pdfx</i> is installed (but do not load this package into <i>novel</i> class). Files <i>AdobeColorProfiles.tex</i> and <i>AdobeExternalProfiles.tex</i> contain code prepared by the author of the <i>pdfx</i> package. The macro names are not the same, but they are easy to decode: <code>\@OIidentifer</code> is <i>/OutputConditionIdentifier</i>; <code>\@OIcondition</code> is <i>/ProfileName</i>; <code>\@OIinfo</code> is <i>/OutputCondition</i>; <code>\@OIregistry</code> is <i>/RegistryName</i>; and <code>\@OIprofile</code> follows <i>\setCMYKcolorprofile</i>.</p>
 </div><!-- end 3.4.4 -->
 
-<h4 id="h3.4.5">3.4.5. Whether or Not to Embed *.icc</h4><div class="d4" id="d3.4.5">
+<h4 id="h3.4.5">3.4.5. Whether or Not to Embed *.icc</h4>
+<div class="d4" id="d3.4.5">
 <p class="item"><b>A.</b> Each Output Intent has a color profile, in the form of a file with extension <i>*.icc</i>.</p>
 <p class="item"><b>B.</b> You usually do not need the color profile, because the printer knows which profile corresponds with which standard Output Intent code.</p>
 <p class="item"><b>C.</b> When you use <code>\SetPDFX</code> in its un-starred form, the *.icc color profile will not be embedded in the PDF. This is the normal situation.</p>
@@ -1025,7 +1030,8 @@ If it does not, the class option <code>revert</code> will undo the tweaks.</p>
 <p class="item" style="position:relative"><b>F.</b> <img src="html-resources/info18.png" width="18" height="18" style="position:relative; bottom:-3px" title="tech info" alt="tech info"/> If your printer requests "US Web Coated SWOP v2" and, as usual, requests that you <em>not</em> embed the corresponding *.icc color profile, then some software will read the Output Intent as "CGATS&nbsp;TR&nbsp;001" instead of "US&nbsp;Web&nbsp;Coated&nbsp;SWOP&nbsp;v2". They are identical.</p>
 </div><!-- end 3.4.5 -->
 
-<h4 id="h3.4.6">3.4.6. Where to Find *.icc Files</h4><div class="d4" id="d3.4.6">
+<h4 id="h3.4.6">3.4.6. Where to Find *.icc Files</h4>
+<div class="d4" id="d3.4.6">
 <p class="item"><b>A.</b> You do not need an *.icc color profile unless you choose to embed it.</p>
 <p class="item"><b>B.</b> Although many *.icc color profiles are freely available, they usually cannot be distributed within an open-source project. You might already have them in your system, wherever such files are stored. Note that TeX uses forward slash in file paths, not backslash, even if the platform is Windows:</p>
 <p class="isolate">
@@ -1245,7 +1251,7 @@ Nonexistent Publications • Portland, Oregon\par<br/>
 <p class="item"><b>E.</b> You do not need to set the unsafe zone. Whether or not you do, and regardless of any values you choose, the result does not affect the finished, final PDF. The zones are not enforced. Margins are unaffected.</p>
 <p class="item"><b>F.</b> If you set unsafe zone, then the unsafe area will have a dark gray background, when you use <code>[draft,shademargins]</code> as class options. This allows you to visualize whether anything intrudes into the unsafe zone.</p>
 <div style="clear:both"></div>
-</div><!-- end 4.3.1.1 -->
+</div><!-- end 4.3.1.2 -->
 </div><!-- end 4.3.1 -->
 
 <h4 id="h4.3.2">4.3.2. Lines Per Page</h4>
@@ -1961,7 +1967,7 @@ This text is in lightgray, until the group ends.<br/>
 <p>Images have built-in positioning arguments.</p>
 <p class="item"><b>F.</b> Do not use floats (except in <a href="#h2.2">sandbox</a>). Use <i>novel's</i> own <code>\FloatImage</code>.</p>
 <p class="item"><b>G.</b> Do not use tables (except in <a href="#h2.2">sandbox</a>). But <i>novel</i> has its <a href="#hD.3.2.7">own provision</a> for a Table of Contents, and the code may be used for other purposes as well.</p>
-<p class="item"><b>H.</b> Do not use picture environment (except in <a href="#h2.2">sandbox</a>). Use only the image commands provided by novel: <code><a href="#h7.2.2">\InlineImage</a></code>, <code><a href="#h7.2.4">\FloatImage</a></code>, and <code><a href="#h7.2.5">\WrapImage</a></code>. There is also a special provision for <a href="#h7.1.2">color cover artwork</a>.</p>
+<p class="item"><b>H.</b> Do not use picture environment (except in <a href="#h2.2">sandbox</a>). Use only the image commands provided by novel: <code><a href="#h7.2.2">\InlineImage</a></code>, <code><a href="#h7.2.4">\FloatImage</a></code>, and <code><a href="#h7.2.5">\WrapImage</a></code>. There is also a special provision for <a href="#h7.1.2">color cover artwork</a> (deprecated).</p>
 </div><!-- end 6.3.1 -->
 
 <h4 id="h6.3.2">6.3.2. Some Useful Commands</h4>
@@ -2007,7 +2013,7 @@ This text is in lightgray, until the group ends.<br/>
 </div><!-- end 6.3 -->
 
 <h3 id="h6.4">6.4 Superscripts, Subscripts</h3>
-<div class="d3" id="d6,4">
+<div class="d3" id="d6.4">
 <p class="item"><b>A.</b> In <i>novel</i>, superscripts and subscripts are called "markers." Most book-quality Open Type fonts have markers in style sets (<i>sups</i>, <i>sinf</i>, <i>subs</i>).</p>
 <p class="item"><b>B.</b> In professional fonts, marker glyph weights are adjusted for consistent appearance compared to ordinary glyphs. However, many free fonts do not adjust marker glyph weights, so the markers may appear too small, or too light. You may choose whether to use a font's own markers, or allow <i>novel</i> to generate markers, depending on whichever you think looks better.</p>
 <p class="item"><b>C.</b> <i>real</i> markers attempt to use the Open Type feature <i>sups</i> for superscripts, and the feature <i>sinf</i> (preferred) or <i>subs</i> (alternate) for subscripts. Real markers are the best choice for professional fonts. If the requested feature is not available for the font, then it will be automatically faked, by scaling/raising/lowering ordinary characters from the basefont (lining numerals will be used).</p>
@@ -2071,8 +2077,11 @@ This text is in lightgray, until the group ends.<br/>
 <p class="code"><code>\SetKnownGoodImages{somefile.png anotherfile.jpg}</code></p>
 </div><!-- end 7.1.1 -->
 
-<h4 id="h7.1.2">7.1.2. Color Cover</h4>
+<h4 id="h7.1.2">7.1.2. Color Cover (deprecated)</h4>
 <div class="d4" id="d7.1.2">
+<p>As of late 2023, most print services no longer have the same requirements as they once did,
+regarding color cover artwork. Although the method provided by <i>novel</i> still works,
+it is the hard way to do something that (nowadays) does not have to be hard.</p>
 <p class="item"><b>A.</b> The book cover may be (usually is) in color. Bleed is required.</p>
 <p class="item"><b>B.</b> If your print service allows you to submit cover artwork as an ordinary RGB image file, that's the easiest way to do it. Then, <i>novel</i> is not used.</p>
 <p class="item" style="position:relative"><b>C.</b> <img src="html-resources/info18.png" width="18" height="18" style="position:relative; bottom:-3px" title="tech info" alt="tech info"/> Complete support for creating a PDF/X-1a:2001 (or other) color cover, with image in CMYK at 240% ink limit, is provided in <i>novel-scripts.zip</i>. This format is required by some American print-on-demand services.</p>
@@ -2236,7 +2245,7 @@ He would have taken the car, had it not been stolen. But that was why he was her
 </p>
 <div style="clear:both"></div>
 </div><!-- end 8.1.2 -->
-</div><!-- end 8.2 -->
+</div><!-- end 8.1 -->
 
 </div><!-- end 8 -->
 </div><!-- end page08 -->
@@ -3184,7 +3193,7 @@ Some text {\baskf\addfontfeature{Numbers=Monospaced} hello 123} is here.
 <h2 id="hY">Appendix Y. &nbsp; Licensing and Credits</h2>
 <div class="d2" id="dY">
 
-<p class="item"><b>A. Licensing:</b> The <i>novel</i> document class, including software, examples, documentation and supporting images, is distributed under the terms of the <a class="external" rel="external" target="new" href="https://www.latex-project.org/lppl/lppl-1-3c/">LaTeX Project Public License, version 1.3c only</a>. Exception: The included fonts <i>NovelDeco.otf</i> and <i>CPmodified.otf</i> are distributed under terms of the <a class="external" rel="external" target="new" href="http://scripts.sil.org/cms/scripts/page.php?item_id=OFL_web">SIL Open Font License, v.1.1.</a></p>
+<p class="item"><b>A. Licensing:</b> The <i>novel</i> document class, including software, examples, documentation and supporting images, is distributed under the terms of the <a class="external" rel="external" target="new" href="https://www.latex-project.org/lppl/lppl-1-3c/">LaTeX Project Public License, version 1.3c only</a>. Exception: The included font <i>NovelDeco.otf</i> is distributed under terms of the <a class="external" rel="external" target="new" href="http://scripts.sil.org/cms/scripts/page.php?item_id=OFL_web">SIL Open Font License, v.1.1.</a></p>
 <p>To ensure that your book may be sold commercially, be careful to use only fonts that allow commercial usage. That may exclude some of the fonts in the LaTeX font catalog. See <a href="#hC">Appendix&nbsp;C</a>.</p>
 
 <p class="item"><b>B. Credits:</b> Within the TeX code files, you will find places where small or large pieces of code are the work of someone else. Names or organizations are credited in-place within the TeX code, according to license.</p>
@@ -3200,12 +3209,12 @@ Some text {\baskf\addfontfeature{Numbers=Monospaced} hello 123} is here.
 <div id="pageZ" class="page">
 
 
-<h2 id="hZ">Appendix Z. &nbsp; Changes in v.1.80.</h2>
+<h2 id="hZ">Appendix Z. &nbsp; Changes in v.1.84.</h2>
 <div class="d2" id="dZ">
 
 <h4>Important Changes</h4>
 <div class="d3">
-<p>Version 1.84 (2023) probably final update. May remove from TeXlive 2024.</p>
+<p>Version 1.84 (2023) probably final update.</p>
 <p>Version 1.83 (2023) corrected minor typo. Will not affect most users.</p>
 <p>Version 1.82 (2023) adds a user setting, to change the default indent.</p>
 <p>Version 1.80 (2023) tweaks some internal code, for faster compiling.
@@ -3215,6 +3224,8 @@ In any case, if you are re-building an earlier document, pay careful attention
 to line breaks and pagination. Due to various adjustments in component
 packages and fonts, a document built in the past may look slightly different
 if re-built now.</p>
+</div>
+
 
 </div><!-- end Z -->
 </div><!-- end Appendix Z -->
