@@ -14,7 +14,10 @@ License URL:  https://www.latex-project.org/lppl/lppl-1-3c/
 
 
 <style>
-body {font-family:sans-serif; line-height:150%; font-size:14pt; color:#000000; background:#ffffff none;}
+body {font-family:sans-serif; color:#203310; background:#cccccc none;}
+#master {position:relative;}
+#toc {position:fixed; width:30%; background:#ffffff none; overflow:scroll; height:98%; float:left;}
+#main {width:68%; float:right; background:#ffffff none;}
 p {font-family:sans-serif,sans-serif; font-size:1em; margin:0px 16px 0px 16px; text-indent:16px;}
 ol, ul {list-style-type:none; margin:0px; padding:0px;}
 li {margin:3px 8px 3px 16px; padding:0px;}
@@ -32,13 +35,19 @@ img.nodisplaynav {display:none; height:1em;}
 img.openclose {display:none; height:1em;}
 *.noimg {padding-left:1.5em;}
 div.d1 {margin:0px 16px 16px 16px;}
-div.d2 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px; border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
-div.d3 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px; border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
-div.d4 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px; border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
-div.d5 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px; border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
-div.d6 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px; border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
+div.d2 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px;
+border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
+div.d3 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px;
+border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
+div.d4 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px;
+border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
+div.d5 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px;
+border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
+div.d6 {margin:0px 0px 16px 16px; padding-bottom:1em; border-top:0; border-right: 0px;
+border-bottom:1px dotted #666666; border-left:1px dotted #666666;}
 div.page {padding:16px 0px 16px 0px; border-top:4px solid #505050;}
 div.codeblock {overflow:auto; margin:16px; padding: 8px; border: 1px solid #000000;}
+div.codeblock p {text-indent:0px; white-space:nowrap;}
 code {font-size:1em; font-family:monospace,monospace; color:#200050; background:transparent none; padding:0px 3px 0px 3px;}
 *.smaller {font-weight:normal; font-size:88%;}
 *.noindent {text-indent:0px;}
@@ -47,7 +56,8 @@ code {font-size:1em; font-family:monospace,monospace; color:#200050; background:
 *.noindentcmd {text-indent:0px; margin-top:16px;}
 *.isolate {padding-left:10px;margin-top:10px; margin-bottom:10px; text-indent:0px;}
 *.dbloc {padding-left:1.8em; visibility:hidden}
-table.preconf {margin-left:auto; margin-right:auto; margin-top:20px; margin-bottom:20px; border:1px solid #000000}
+table.preconf {margin-left:auto; margin-right:auto; margin-top:20px; margin-bottom:20px;
+border:1px solid #000000}
 table.preconf caption {font-weight:bold;}
 table.preconf th {text-align:left; padding:6px; font-weight:normal; border-bottom:1px solid #000000;}
 table.preconf td {text-align:left; padding:6px;}
@@ -58,7 +68,6 @@ table.preconf p {text-indent:0px; margin:6px;}
 small {line-height:50%;}
 span.ap {color: #996633;} /* percent comment in code */
 *.floatright {float:right; margin-left:1em; margin-right:16px;}
-*.n {display:none; border:1px solid #990000; font-family:monospace,monospace; font-size:0.92em; font-weight:bold; padding: 0 0.3em 0 0.3em; color:#990000; background: #ffdddd none; margin-right:0.5em;}
 p.centerimg {text-indent:0px; text-align:center; margin-top:0.5em; margin-bottom:0.5em;}
 p.code {text-indent:0px; margin: 4px 16px 4px 16px; padding-left:32px;}
 p.item {text-indent:0px; padding-top:8px;}
@@ -67,115 +76,22 @@ hr.newpage {margin-top:2em; margin-bottom:2em; height:4px; color:#505050; backgr
 p.overhang {margin-left:32px; text-indent:-16px;}
 *.sampledoc {margin:1em}
 *.sampledoc em {font-size:92%; color:#666666}
-#master {position:relative;}
-#finish {clear:both;}
-#toc {display:block;}
-#toc li ul li {display:none;}
-#main {width:auto; float:none; background:#ffffff none;}
-*.noshowprint {display:none;}
-div.codeblock p {text-indent:0px;}
-*.screennoscript {display:none;}
 </style>
-
-<style id="screenstyle">
-@media screen {
-  body {color:#203310; background:#cccccc none;}
-  #toc {display:block; font-size:14pt; width:30%; background:#ffffff none; position:fixed; overflow:scroll; height:98%;}
-  #toc li ul li {display:block;}
-  #main {float:right; background:#ffffff none; width:68%; padding-bottom:40px;}
-  div.codeblock p {text-indent:0px; white-space:nowrap;}
-  *.screennoscript {display:inline;}
-  *.toptitle {display:none;}
-}
-</style>
-<script>var doprint=false;</script>
-
-
-<!-- Trouble Printing? Remove the following line, and another one below: -->
-<!-- REMOVE ME
-
-<style>
-  body {color:#000000; background:#ffffff none;}
-  #toc {display:block; font-size:1em; width:auto; background:#ffffff none; position:static; overflow:auto; height:auto;}
-  #toc li ul li {display:none;}
-  #main {float:none; background:#ffffff none; width:auto; padding-bottom:0;}
-  div.codeblock p {text-indent:0px; white-space:auto;}
-  *.screennoscript {display:none;}
-  *.toptitle {display:block;}
-  *.notprinted {display:none;}
-</style>
-<script>doprint=true;</script>
-
-REMOVE ME TOO -->
-<!-- Also remove the above line, if trouble printing. Then load with JavaScript off. -->
-
-
-<script>
-if(!doprint) {window.onload = loadnav;}
-function loadnav() {
-  nspans = document.getElementsByClassName("n");
-  placenav();
-}
-function placenav(){
-  for(var n=0; nspans.length>n; n++){
-    nspans[n].style.display="inline";
-    nspans[n].style.cursor="pointer";
-    nspans[n].title="open";
-    nspans[n].setAttribute("data-state",0);
-    nspans[n].innerHTML="+";
-    nspans[n].onclick=openclose;
-    lstartclose(n);
-  }
-}
-function lstartclose(whichn) {
-  whichparid = nspans[whichn].parentElement.id;
-  whichdiv = document.getElementById("u" + whichparid.substring(1));
-  if(whichdiv) whichdiv.style.display="none";
-}
-function openclose(){
-  thisparid = this.parentElement.id;
-  thisdiv = document.getElementById("u" + thisparid.substring(1));
-  if(this.title=="close") {thisdiv.style.display="none";}
-  if(this.title=="open") {thisdiv.style.display="block";}
-  thisstate = this.getAttribute("data-state");
-  thisval = 1 - thisstate;
-  this.setAttribute("data-state",thisval);
-  if(this.getAttribute("data-state")=="1") {this.title="close"; this.innerHTML="&ndash;";}
-  if(this.getAttribute("data-state")=="0") {this.title="open"; this.innerHTML="+";}
-}
-function openall() {
-  for(var n=0; nspans.length>n; n++){
-    nspans[n].setAttribute("data-state",1);
-    nspans[n].title="close";
-    nspans[n].innerHTML="&ndash;";
-    thisparid = nspans[n].parentElement.id;
-    thisdiv = document.getElementById("u" + thisparid.substring(1));
-    thisdiv.style.display="block";
-  }
-}
-function closeall() {
-  placenav();
-}
-</script>
 
 </head>
 
 <body>
 <div id="master">
 
-
 <div id="toc" class="toc">
 
-<h1 class="toptitle">Document class <em>novel</em> - Documentation</h1>
-<h3 class="noshowprint"><a href="#main">Contents</a> &nbsp; <span class="smaller"><a href="javascript:openall();">(open all)</a> &nbsp; <a href="javascript:closeall();">(close all)</a></span></h3>
+<h3><a href="#main">Contents</a></h3>
 
 <ul><!-- master toc ul -->
 
-  <li id="l0"><a href="#h0"><b>&ldquo;Novel&rdquo; Document Class</b></a></li>
-
-  <li id="l1"><span class="n"></span><a href="#h1"><b>1. Before You Begin</b></a>
+  <li id="l1"><a href="#h1"><b>1. Before You Begin</b></a>
     <ul id="u1">
-      <li id="l1.1"><span class="n"></span><a href="#h1.1">1.1 Do These Things</a>
+      <li id="l1.1"><a href="#h1.1">1.1 Do These Things</a>
         <ul id="u1.1">
           <li><a href="#h1.1.1">1.1.1 LuaLateX Compiler</a></li>
           <li><a href="#h1.1.2">1.1.2 UTF-8 Encoding</a></li>
@@ -184,7 +100,7 @@ function closeall() {
           <li><a href="#h1.1.5">1.1.5 Book Design</a></li>
         </ul>
       </li><!-- end 1.1 -->
-      <li id="l1.2"><span class="n"></span><a href="#h1.2">1.2 Avoid These Things</a>
+      <li id="l1.2"><a href="#h1.2">1.2 Avoid These Things</a>
         <ul id="u1.2">
           <li><a href="#h1.2.1">1.2.1 Non-Fontspec Font Loader</a></li>
           <li><a href="#h1.2.2">1.2.2 TeX Font Sizes</a></li>
@@ -192,7 +108,7 @@ function closeall() {
           <li><a href="#h1.2.4">1.2.4 TeX Editors and IDEs</a></li>
         </ul>
       </li><!-- end 1.2 -->
-      <li id="l1.3"><span class="n"></span><a href="#h1.3">1.3 Beware of These Things</a>
+      <li id="l1.3"><a href="#h1.3">1.3 Beware of These Things</a>
         <ul id="u1.3">
           <li><a href="#h1.3.1">1.3.1 TeX Special Characters</a></li>
           <li><a href="#h1.3.2">1.3.2 Layout Surprises</a></li>
@@ -201,7 +117,7 @@ function closeall() {
     </ul>
   </li><!-- end 1 -->
 
-  <li id="l2"><span class="n"></span><a href="#h2"><b>2. Document Class Options</b></a>
+  <li id="l2"><a href="#h2"><b>2. Document Class Options</b></a>
     <ul id="u2">
       <li><a href="#h2.1">2.1 draft</a></li>
       <li><a href="#h2.2">2.2 sandbox</a></li>
@@ -216,16 +132,16 @@ function closeall() {
     </ul>
   </li><!-- end 2 -->
 
-  <li id="l3"><span class="n"></span><a href="#h3"><b>3. Metadata, File Data, PDF/X</b></a>
+  <li id="l3"><a href="#h3"><b>3. Metadata, File Data, PDF/X</b></a>
     <ul id="u3">
-      <li id="l3.1"><span class="n"></span><a href="#h3.1">3.1 Definitions of Terms</a>
+      <li id="l3.1"><a href="#h3.1">3.1 Definitions of Terms</a>
         <ul id="u3.1">
           <li><a href="#h3.1.1">3.1.1 ISBN Metadata</a></li>
           <li><a href="#h3.1.2">3.1.2 Printed Metadata</a></li>
           <li><a href="#h3.1.3">3.1.3 File (PDF) Metadata</a></li>
         </ul>
       </li><!-- end 3.1 -->
-      <li id="l3.2"><span class="n"></span><a href="#h3.2">3.2 Rules for File Data</a>
+      <li id="l3.2"><a href="#h3.2">3.2 Rules for File Data</a>
         <ul id="u3.2">
           <li><a href="#h3.2.1">3.2.1 Required, Prohibited?</a></li>
           <li><a href="#h3.2.2">3.2.2 Limited to Latin-1?</a></li>
@@ -233,7 +149,7 @@ function closeall() {
           <li><a href="#h3.2.4">3.2.4 Forbidden Characters</a></li>
         </ul>
       </li><!-- end 3.2 -->
-      <li id="l3.3"><span class="n"></span><a href="#h3.3">3.3 File Data Commands</a>
+      <li id="l3.3"><a href="#h3.3">3.3 File Data Commands</a>
         <ul id="u3.3">
           <li><a href="#h3.3.1">3.3.1 \SetTitle</a></li>
           <li><a href="#h3.3.2">3.3.2 \SetAuthor</a></li>
@@ -241,7 +157,7 @@ function closeall() {
           <li><a href="#h3.3.4">3.3.4 \SetApplication, \SetProducer</a></li>
         </ul>
       </li><!-- end 3.3 -->
-      <li id="l3.4"><span class="n"></span><a href="#h3.4">3.4 PDF/X</a>
+      <li id="l3.4"><a href="#h3.4">3.4 PDF/X</a>
         <ul id="u3.4">
           <li><a href="#h3.4.1">3.4.1 Compliance Standards</a></li>
           <li><a href="#h3.4.2">3.4.2 Output Intents</a></li>
@@ -254,15 +170,15 @@ function closeall() {
     </ul>
   </li><!-- end 3 -->
 
-  <li id="l4"><span class="n"></span><a href="#h4"><b>4. Book Size, Page Layout, Fonts</b></a>
+  <li id="l4"><a href="#h4"><b>4. Book Size, Page Layout, Fonts</b></a>
     <ul id="u4">
-      <li id="l4.1"><span class="n"></span><a href="#h4.1">4.1 Book Dimensions</a>
+      <li id="l4.1"><a href="#h4.1">4.1 Book Dimensions</a>
         <ul id="u4.1">
           <li><a href="#h4.1.1">4.1.1 Trim Size, TrimBox</a></li>
           <li><a href="#h4.1.2">4.1.2 Media Size, MediaBox</a></li>
         </ul>
       </li><!-- end 4.1 -->
-      <li id="l4.2"><span class="n"></span><a href="#h4.2">4.2 Fonts, Normal Font Size</a>
+      <li id="l4.2"><a href="#h4.2">4.2 Fonts, Normal Font Size</a>
         <ul id="u4.2">
           <li><a href="#h4.2.1">4.2.1 Parent (Main) Font, Size</a>
             <ul id="u4.2.1">
@@ -276,7 +192,7 @@ function closeall() {
           <li><a href="#h4.2.5">4.2.5 Advanced: New Fonts</a></li>
         </ul>
       </li><!-- end 4.2 -->
-      <li id="l4.3"><span class="n"></span><a href="#h4.3">4.3 Interior Page Layout</a>
+      <li id="l4.3"><a href="#h4.3">4.3 Interior Page Layout</a>
         <ul id="u4.3">
           <li><a href="#h4.3.1">4.3.1 Margins</a>
             <ul id="u4.3.1">
@@ -312,9 +228,9 @@ function closeall() {
     </ul>
   </li><!-- end 4 -->
 
-  <li id="l5"><span class="n"></span><a href="#h5"><b>5. Chapter Structure</b></a>
+  <li id="l5"><a href="#h5"><b>5. Chapter Structure</b></a>
     <ul id="u5">
-      <li id="l5.1"><span class="n"></span><a href="#h5.1">5.1 Starting a Chapter</a>
+      <li id="l5.1"><a href="#h5.1">5.1 Starting a Chapter</a>
         <ul id="u5.1">
           <li><a href="#h5.1.1">5.1.1 \clearpage, \cleartorecto</a></li>
           <li><a href="#h5.1.2">5.1.2 ChapterStart Environment</a>
@@ -340,20 +256,20 @@ function closeall() {
           </li>
         </ul>
       </li><!-- end 5.1 -->
-      <li id="l5.2"><span class="n"></span><a href="#h5.2">5.2 Continuous Chapters</a>
+      <li id="l5.2"><a href="#h5.2">5.2 Continuous Chapters</a>
         <ul id="u5.2">
           <li><a href="#h5.2.1">5.2.1 Short ChapterStart</a></li>
           <li><a href="#h5.2.2">5.2.2 \QuickChapter</a></li>
         </ul>
       </li><!-- end 5.2 -->
-      <li id="l5.3"><span class="n"></span><a href="#h5.3">5.3 Scene Breaks</a>
+      <li id="l5.3"><a href="#h5.3">5.3 Scene Breaks</a>
         <ul id="u5.3">
           <li><a href="#h5.3.1">5.3.1 \SetScenebreakIndent</a></li>
         </ul>
       </li><!-- end 5.3 -->
-      <li id="l5.4"><span class="n" style="visibility:hidden"></span><a href="#h5.4">5.4 Chapter Numbering</a>
+      <li id="l5.4"><a href="#h5.4">5.4 Chapter Numbering</a>
       </li><!-- end 5.4 -->
-      <li id="l5.5"><span class="n"></span><a href="#h5.5">5.5 First Lines</a>
+      <li id="l5.5"><a href="#h5.5">5.5 First Lines</a>
         <ul id="u5.5">
           <li><a href="#h5.5.1">5.5.1 First Character Special</a></li>
           <li><a href="#h5.5.2">5.5.2 First Line Small Caps</a></li>
@@ -363,9 +279,9 @@ function closeall() {
     </ul>
   </li><!-- end 5 -->
 
-  <li id="l6"><span class="n"></span><a href="#h6"><b>6. Text Size, Style, Position</b></a>
+  <li id="l6"><a href="#h6"><b>6. Text Size, Style, Position</b></a>
     <ul id="u6">
-      <li id="l6.1"><span class="n"></span><a href="#h6.1">6.1 Text Sizes</a>
+      <li id="l6.1"><a href="#h6.1">6.1 Text Sizes</a>
         <ul id="u6.1">
           <li><a href="#h6.1.1">6.1.1 Standard Sizes: Disabled!</a></li>
           <li><a href="#h6.1.2">6.1.2 Local sizing: \charscale</a></li>
@@ -373,7 +289,7 @@ function closeall() {
           <li><a href="#h6.1.4">6.1.4 Open Type Scale</a></li>
         </ul>
       </li><!-- end 6.1 -->
-      <li id="l6.2"><span class="n"></span><a href="#h6.2">6.2 General Styling</a>
+      <li id="l6.2"><a href="#h6.2">6.2 General Styling</a>
         <ul id="u6.2">
           <li><a href="#h6.2.1">6.2.1 Italics and Emphasis</a></li>
           <li><a href="#h6.2.2">6.2.2 Bold and Semibold</a></li>
@@ -385,13 +301,13 @@ function closeall() {
           <li><a href="#h6.2.8">6.2.8 Grayscale Text</a></li>
         </ul>
       </li><!-- end 6.2 -->
-      <li id="l6.3"><span class="n"></span><a href="#h6.3">6.3 Positioning and Alignment</a>
+      <li id="l6.3"><a href="#h6.3">6.3 Positioning and Alignment</a>
         <ul id="u6.3">
           <li><a href="#h6.3.1">6.3.1 What to Avoid</a></li>
           <li><a href="#h6.3.2">6.3.2 Some Useful Commands</a></li>
         </ul>
       </li><!-- end 6.3 -->
-      <li id="l6.4"><span class="n"></span><a href="#h6.4">6.4 Superscripts, Subscripts</a>
+      <li id="l6.4"><a href="#h6.4">6.4 Superscripts, Subscripts</a>
         <ul id="u6.4">
           <li><a href="#h6.4.1">6.4.1 Global Marker Style</a></li>
           <li><a href="#h6.4.2">6.4.2 Local Real or Fake</a></li>
@@ -400,15 +316,15 @@ function closeall() {
     </ul>
   </li><!-- end 6 -->
 
-  <li id="l7"><span class="n"></span><a href="#h7"><b>7. Images, Pictures, Drawings</b></a>
+  <li id="l7"><a href="#h7"><b>7. Images, Pictures, Drawings</b></a>
     <ul id="u7">
-      <li id="l7.1"><span class="n"></span><a href="#h7.1">7.1 Technical Requirements</a>
+      <li id="l7.1"><a href="#h7.1">7.1 Technical Requirements</a>
         <ul id="u7.1">
           <li><a href="#h7.1.1">7.1.1 Interior B/W, Grayscale</a></li>
           <li><a href="#h7.1.2">7.1.2 Color Cover</a></li>
         </ul>
       </li><!-- end 7.1 -->
-      <li id="l7.2"><span class="n"></span><a href="#h7.2">7.2 Placing Interior Images</a>
+      <li id="l7.2"><a href="#h7.2">7.2 Placing Interior Images</a>
         <ul id="u7.2">
           <li><a href="#h7.2.1">7.2.1 Image-Like Text</a></li>
           <li><a href="#h7.2.2">7.2.2 \InlineImage</a></li>
@@ -420,9 +336,9 @@ function closeall() {
     </ul>
   </li><!-- end 7 -->
 
-  <li id="l8"><span class="n"></span><a href="#h8"><b>8. Tables, Lists</b></a>
+  <li id="l8"><a href="#h8"><b>8. Tables, Lists</b></a>
     <ul id="u8">
-      <li id="l8.1"><span class="n"></span><a href="#h8.1">8.1 The toc Environment</a>
+      <li id="l8.1"><a href="#h8.1">8.1 The toc Environment</a>
         <ul id="u8.1">
           <li><a href="#h8.1.1">8.1.1 Entries Using \tocitem</a></li>
           <li><a href="#h8.1.2">8.1.2 Example Table</a></li>
@@ -431,10 +347,10 @@ function closeall() {
     </ul>
   </li>
 
-  <li id="l9"><span class="n"></span><a href="#h9"><b>9. Footnotes, Endnotes</b></a>
+  <li id="l9"><a href="#h9"><b>9. Footnotes, Endnotes</b></a>
     <ul id="u9">
-      <li id="l9.1"><span class="n" style="visibility:hidden"></span><a href="#h9.1">9.1 Footnotes</a></li>
-      <li id="l9.2"><span class="n"></span><a href="#h9.2">9.2 Endnotes</a>
+      <li id="l9.1"><a href="#h9.1">9.1 Footnotes</a></li>
+      <li id="l9.2"><a href="#h9.2">9.2 Endnotes</a>
         <ul id="u9.2">
           <li><a href="#h9.2.1">9.2.1 Placing: \endnote</a></li>
           <li><a href="#h9.2.2">9.2.2 Writing: \endnotetext</a></li>
@@ -447,17 +363,17 @@ function closeall() {
 
   <li><i>Appendices:</i></li>
 
-  <li id="lA"><span class="n" style="visibility:hidden"></span><a href="#hA"><b>A. Sample Document</b></a>
+  <li id="lA"><a href="#hA"><b>A. Sample Document</b></a>
   </li><!-- end A -->
 
-  <li id="lB"><span class="n"></span><a href="#hB"><b>B. Six-Page Front Matter</b></a>
+  <li id="lB"><a href="#hB"><b>B. Six-Page Front Matter</b></a>
     <ul id="uB">
       <li><a href="#hB.1">B.1 Half-Title to Copyright</a></li>
       <li><a href="#hB.2">B.2 Post-Copyright</a></li>
     </ul>
   </li><!-- end B -->
 
-  <li id="lC"><span class="n"></span><a href="#hC"><b>C. Shopping for Fonts</b></a>
+  <li id="lC"><a href="#hC"><b>C. Shopping for Fonts</b></a>
     <ul id="uC">
       <li><a href="#hC.1">C.1 Licensing Issues</a></li>
       <li><a href="#hC.2">C.2 Technical Issues</a></li>
@@ -465,16 +381,16 @@ function closeall() {
     </ul>
   </li><!-- end C -->
 
-  <li id="lD"><span class="n"></span><a href="#hD"><b>D. Book Design</b></a>
+  <li id="lD"><a href="#hD"><b>D. Book Design</b></a>
     <ul id="uD">
-      <li id="lD.1"><span class="n"></span><a href="#hD.1">D.1 Terminology</a>
+      <li id="lD.1"><a href="#hD.1">D.1 Terminology</a>
         <ul id="uD.1">
           <li><a href="#hD.1.1">D.1.1 Sheet, Page, Leaf</a></li>
           <li><a href="#hD.1.2">D.1.2 Folio, Spine</a></li>
           <li><a href="#hD.1.3">D.1.3 Signature, Imposition</a></li>
         </ul>
       </li><!-- end D.1 -->
-      <li id="lD.2"><span class="n"></span><a href="#hD.2">D.2 Book Manufacture</a>
+      <li id="lD.2"><a href="#hD.2">D.2 Book Manufacture</a>
         <ul id="uD.2">
           <li><a href="#hD.2.1">D.2.1 Perfect Binding</a></li>
           <li><a href="#hD.2.2">D.2.2 Library Binding</a></li>
@@ -482,15 +398,15 @@ function closeall() {
           <li><a href="#hD.2.4">D.2.4 Paper, Cover Materials</a></li>
         </ul>
       </li><!-- end D.2 -->
-      <li id="lD.3"><span class="n"></span><a href="#hD.3">D.3 Interior Structure</a>
+      <li id="lD.3"><a href="#hD.3">D.3 Interior Structure</a>
         <ul id="uD.3">
-          <li id="lD.3.1"><span class="n"></span><a href="#hD.3.1">D.3.1 Display, Chapter-Like</a>
+          <li id="lD.3.1"><a href="#hD.3.1">D.3.1 Display, Chapter-Like</a>
             <ul id="uD.3.1">
               <li><a href="#hD.3.1.1">D.3.1.1 Display Pages</a></li>
               <li><a href="#hD.3.1.2">D.3.1.2 Chapter-Like Sections</a></li>
             </ul>
           </li>
-          <li id="lD.3.2"><span class="n"></span><a href="#hD.3.2">D.3.2 Front Matter</a>
+          <li id="lD.3.2"><a href="#hD.3.2">D.3.2 Front Matter</a>
             <ul id="uD.3.2">
               <li><a href="#hD.3.2.1">D.3.2.1 Half-Title, i</a></li>
               <li><a href="#hD.3.2.2">D.3.2.2 Blank, ii</a></li>
@@ -507,7 +423,7 @@ function closeall() {
               <li><a href="#hD.3.2.13">D.3.2.13 End of Front Matter</a></li>
             </ul>
           </li>
-          <li id="lD.3.3"><span class="n"></span><a href="#hD.3.3">D.3.3 Main Matter</a>
+          <li id="lD.3.3"><a href="#hD.3.3">D.3.3 Main Matter</a>
             <ul id="uD.3.3">
               <li><a href="#hD.3.3.1">D.3.3.1 Half-Title in Main</a></li>
               <li><a href="#hD.3.3.2">D.3.3.2 Part Separator</a></li>
@@ -518,7 +434,7 @@ function closeall() {
               <li><a href="#hD.3.3.7">D.3.3.7 End Notes, Appendix</a></li>
             </ul>
           </li>
-          <li id="lD.3.4"><span class="n"></span><a href="#hD.3.4">D.3.4 At the End</a>
+          <li id="lD.3.4"><a href="#hD.3.4">D.3.4 At the End</a>
             <ul id="uD.3.4">
               <li><a href="#hD.3.4.1">D.3.4.1 Back Matter? Not!</a></li>
               <li><a href="#hD.3.4.2">D.3.4.2 About the Author</a></li>
@@ -529,14 +445,14 @@ function closeall() {
     </ul>
   </li><!-- end D -->
 
-  <li id="lE"><span class="n"></span><a href="#hE"><b>E. Fontspec Syntax</b></a>
+  <li id="lE"><a href="#hE"><b>E. Fontspec Syntax</b></a>
     <ul id="uE">
-      <li id="lE.1"><span class="n"></span><a href="#hE.1">E.1 Family vs. File Name</a>
+      <li id="lE.1"><a href="#hE.1">E.1 Family vs. File Name</a>
         <ul id="uE.1">
           <li><a href="#hE.1.1">E.1.1 Set/New by Name</a></li>
         </ul>
       </li>
-      <li id="lE.2"><span class="n"></span><a href="#hE.2">E.2 Open Type Features</a>
+      <li id="lE.2"><a href="#hE.2">E.2 Open Type Features</a>
         <ul id="uE.2">
           <li><a href="#hE.2.1">E.2.1 Scale Pseudo-Feature</a></li>
           <li><a href="#hE.2.2">E.2.2 Color and Opacity</a></li>
@@ -547,7 +463,7 @@ function closeall() {
     </ul>
   </li><!-- end E -->
 
-  <li id="lF"><span class="n"></span><a href="#hF"><b>F. Drop Caps</b></a>
+  <li id="lF"><a href="#hF"><b>F. Drop Caps</b></a>
     <ul id="uF">
       <li><a href="#hF.1">F.1 Built-In vs Lettrine</a></li>
       <li><a href="#hF.2">F.2 \dropcap[]{}</a></li>
@@ -557,10 +473,10 @@ function closeall() {
     </ul>
   </li><!-- end F -->
 
-  <li id="lY"><span class="n" style="visibility:hidden"></span><a href="#hY"><b>Y. Licensing and Credits</b></a>
+  <li id="lY"><a href="#hY"><b>Y. Licensing and Credits</b></a>
   </li><!-- end Y -->
 
-  <li id="lZ"><span class="n" style="visibility:hidden"></span><a href="#hZ"><b>Z. Important Changes</b></a>
+  <li id="lZ"><a href="#hZ"><b>Z. Important Changes</b></a>
   </li><!-- end Z -->
 
 </ul><!-- end master toc ul -->
@@ -575,13 +491,14 @@ function closeall() {
 <div id="main">
 <!-- **************************************************************************************** -->
 
-<h1 id="h0" style="padding-top:16px">Document class <i>novel</i> - documentation. &nbsp; <span style="font-size:75%">V. 1.84, 2023/12/15</span></h1>
-<p class="noindent"><span id="screennoscript" class="screennoscript"><b>For enhanced navigation of this file, turn on JavaScript.</b></span></p>
-<div><script>if(document.getElementById("screennoscript")){document.getElementById("screennoscript").style.display="none";}</script></div>
+<h1 id="h0" style="padding-top:16px">Document class <i>novel</i> - documentation.</h1>
+<p>V. 1.84, 2023/12/15</p>
 
-<p class="item">ALERT: If you have been using this document class prior to version 1.80 (February 2023), see <a href="#hZ">Appendix Z</a>.</p>
+<p class="item">ALERT: If you have been using this document class prior to version 1.80 (February 2023),
+see <a href="#hZ">Appendix Z</a>.</p>
 
-<p class="item">ALERT: New user? Little knowledge of LaTeX? Try the simpler "novelette" document class. Expected in March, 2023.</p>
+<p class="item">ALERT: New user? Little knowledge of LaTeX? Try the simpler "novelette" document class.
+Expected in 2024.</p>
 
 <!-- ********************************************************************** -->
 <div id="page01" class="page">
@@ -590,9 +507,6 @@ function closeall() {
 <p>The resulting PDF uses built-in technology to produce PDF/X compliant files for print-on-demand (P.O.D.) services. There is no capability for E-books, and never will be.</p>
 <p>To use <i>novel</i>, you need TeXLive 2020 or later, or recent MikTeX. Open your TeX package manager, and install both <i>novel</i> and <i>libertinus-fonts</i>.</p>
 
-<p><b>New in version 1.82:</b> Preamble command <code>\myparindent{length}</code>
-will over-ride the default 1.5em as normal indent. Version 1.83: Minor typo corrected.
-Version 1.84: Probably final update.</p>
 
 <h2 id="h1">1. Before You Begin</h2>
 <div class="d2" id="d1">
@@ -2675,7 +2589,7 @@ It was a dark and stormy night, etc.<br/>
 <p>The source of the quotation should be right-justified within the block, and may be preceded by an emdash. Typically, names of people are not italicized, but titles of books are. It is not necessary to give elaborate details; this is not a bibliography.</p>
 <p>It is not necessary to load the <i>epigraph</i> package. Simply construct your own style of epigraph using other methods. But if you do load <i>epigraph</i>: Only use <code>\epigraph</code>, or the <code>epigraphs</code> environment, within the ChapterStart environment, or on a display page. Commands <code>\epigraphhead</code>, <code>\dropchapter</code>, <code>\undocrop</code> do not work in <i>novel</i>. The <code>\cleartoevenpage[<i>option</i>]</code> command does work. Ignore the material regarding epigraphs on part pages or in bibliographies.</p>
 
-<h6 id="hD.3.2.6.1"><span class="n"></span>D.3.2.6.1. Example Epigraph: Real Quotation</h6>
+<h6 id="hD.3.2.6.1">D.3.2.6.1. Example Epigraph: Real Quotation</h6>
 <div class="d6" id="uD.3.2.6.1">
 <p class="noindent">This might be used for an action adventure:</p>
 <p class="code"><img class="floatright" src="html-resources/shakepi.png" width="131" height="208" alt="sample epigraph: Shakespeare"/>
@@ -2693,7 +2607,7 @@ The valiant never taste of death but once.\par<br/>
 <div style="clear:both"></div>
 </div><!-- end D.3.2.6.1 -->
 
-<h6 id="hD.3.2.6.2"><span class="n"></span>D.3.2.6.2. Example Epigraph: Imaginary Quotation</h6>
+<h6 id="hD.3.2.6.2">D.3.2.6.2. Example Epigraph: Imaginary Quotation</h6>
 <div class="d6" id="uD.3.2.6.2">
 <p class="noindent">This might be used for contemporary fiction with a humorous style. The fictional speaker will appear as a character in the book:</p>
 <p class="code"><img class="floatright" src="html-resources/dorfmcnorf.png" width="131" height="208" alt="sample epigraph: imaginary"/>
@@ -2749,7 +2663,7 @@ Let me tell you, there's nothing more exciting than the brouhaha at Mickey's Pub
 <p>If an Author's Note is two pages long, then on the second page use the same page style that you would ordinary use to start a chapter. Normally, this is <code>\thispagestyle{footer}</code>.</p>
 <p>If an Author's Note is three or more pages long, then a header is permitted (if the book's main style has header). You may allow author and title to appear in header text, but it is better to indicate that this is <em>not</em> the main story, using <code>\SetVersoHeadText{Author's&nbsp;Note}</code> and <code>\SetRectoHeadText{Author's&nbsp;Note}</code>.</p>
 
-<h6 id="hD.3.2.10.1"><span class="n"></span>D.3.2.10.1. Example Author's Note</h6>
+<h6 id="hD.3.2.10.1">D.3.2.10.1. Example Author's Note</h6>
 <div class="d6" id="uD.3.2.10.1">
 <p class="noindent">In a book of historical fiction, based on the author's own travels and expertise:</p>
 <p class="code"><code><small>
@@ -2784,7 +2698,7 @@ Finally, I would like to thank... \lipsum[1]<br/>
 <p>A single map, or maybe two, need not be mentioned in a table of contents or illustrations. If you have a lot of them strewn around the book, then they should be listed in such a table; but this is very rare in fiction.</p>
 <p>As with all images, a map must be placed using <i>novel's</i> own <a href="#h7">image placement methods</a>.</p>
 
-<h6 id="hD.3.2.11.1"><span class="n"></span>D.3.2.11.1. Example Map</h6>
+<h6 id="hD.3.2.11.1">D.3.2.11.1. Example Map</h6>
 <div class="d6" id="uD.3.2.11.1">
 <p class="noindent">Typically, there will be nothing but the single image on a Map page, with all text self-contained. But in this example, the image only occupies part of the page. It is followed by ordinary text for the numbered locations:
 <p class="code"><img class="floatright" src="html-resources/map.png" width="178" height="274" alt="sample map"/>
@@ -2844,7 +2758,7 @@ Finally, I would like to thank... \lipsum[1]<br/>
 <p>Some books are partitioned into distinct sub-books. A sub-book is of substantial length, not individual chapters or short stories.</p>
 <p>If your book has distinct sub-books, then each of them has its own recto cover page, known as a Part Separator. Its verso is blank or an Epigraph. Then the accompanying story begins recto.</p>
 <p>A Part Separator is <i>always</i> main matter. So, the first Part Separator is <i>always</i> page 1 (number not printed). Then its text begins on page 3. Do not re-initialize the page count when you get to the next Part Separator.</p>
-<p>Part separators could be simply <i>Part I</i>, <i>Part II</i>, and so forth. They could be <i>Book I</i>, <i>Book II</i>. Or, they could have distinctive titles, such as <i>The Northern Front</i> and <i>The Southern Front</i>. If your book is two novelettes in one, then the Part Separators would be the title (and subtitle, if any) of the individual novelettes. Sometimes a Part Separator has a brief description of its purpose, as in <i>Book I. On Earth</i> followed by <i>Book II. On Mars</i>.</p>
+<p>Part separators could be simply <i>Part I</i>, <i>Part II</i>, and so forth. They could be <i>Book I</i>, <i>Book II</i>. Or, they could have distinctive titles, such as <i>The Northern Front</i> and <i>The Southern Front</i>. If your book is "two in one" then the Part Separators would be the title (and subtitle, if any) of the individual parts. Sometimes a Part Separator has a brief description of its purpose, as in <i>Book I. On Earth</i> followed by <i>Book II. On Mars</i>.</p>
 <p>Unless your book has a very complex structure, do <i>not</i> use both a second Half-Title (whether in front matter or main matter) and a Part Separator. Combine them as the recto main matter page 1: <i>The Withens Chronicles. Part I</i>, or simply <i>Part I</i>. Then the next Part Separator would be <i>Part II</i>.</p>
 <p>In one book I recently noticed, there were five parts, each of which corresponded to one calendar day. The Part Separator showed the day, as in <i>Monday, September 25</i>. Then within each part there were several chapters, each of which took us to some different event in a different setting, all on that same day. I also note that this book had no Table of Contents; the progress of the novel was therefore a surprise, by its author's intent.</p>
 </div><!-- end D.3.3.2 -->
@@ -3214,7 +3128,7 @@ Some text {\baskf\addfontfeature{Numbers=Monospaced} hello 123} is here.
 
 <h4>Important Changes</h4>
 <div class="d3">
-<p>Version 1.84 (2023) probably final update.</p>
+<p>Version 1.84 (2023) docs edited. Probably final update.</p>
 <p>Version 1.83 (2023) corrected minor typo. Will not affect most users.</p>
 <p>Version 1.82 (2023) adds a user setting, to change the default indent.</p>
 <p>Version 1.80 (2023) tweaks some internal code, for faster compiling.
@@ -3234,7 +3148,7 @@ if re-built now.</p>
 
 
 </div><!-- end main -->
-<div id="finish"></div>
+<div style="clear:both"></div>
 </div><!-- end master -->
 </body>
 </html>
