@@ -1,7 +1,7 @@
 %% This is file `novel-FOGRA39.clo', part of `novel' document class.
 %% The values of the arguments are public industry standards.
 \ProvidesFile{novel-FOGRA39.clo}%
-[2023/12/15 any version. (novel Output Intent FOGRA39)]
+[2024/01/03 any version. (novel Output Intent FOGRA39)]
 %%
 
 
