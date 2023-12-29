@@ -8,35 +8,24 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 % Actually needs LuaLaTeX, at least version 0.95 from TeXLive 2016.
-\ProvidesClass{novel}[2024/01/03 v1.86 LaTeX document class]
+\ProvidesClass{novel}[2023/12/15 v1.84 LaTeX document class]
 %%
-%% Version 1.86: Capability to use babel (instead of default polyglossia).
+%% Version 1.84: Possibly final update.
 
-%% If you wish to use babel, instead of polyglossia, then you must write
-%% this line of code ABOVE \documentclass{novel} :
-%%   \def\usebabel{}
-%% It does not matter whether you put anything in the braces. Ignored.
-%% Then, you can use babel commands in Preamble and document body.
-%% In particular, use \selectlanguage after \documentclass{novel}.
-%% In all cases, it is best to avoid using babel shortcuts, because the
-%% use of straight double quotes, for different purposes, makes editing harder.
-%% The novel document class is not set up for right-to-left languages,
-%% scripted languages, or languages with stacked diacriticals.
 
 %% During the years since `novel' was introduced, there have been
 %% many changes in print-on-demand. Also, `novel` offers some
 %% features that are rarely used, bloating the code and documentation.
-%%   Although `novel` still works (as of late 2023), it is more complicated
-%% than necessary for ordinary popular fiction. Unless you really need `novel',
-%% try `novelette' instead. Available early 2024. Easier to use.
+%%   Although `novel` still works (as of late 2023), its use is discouraged
+%% for new projects. Instead, try the `novelette` document class,
+%% expected availability 2024.
 
 
 %% In addition to a minimal LaTeX setup, with luatex, you will need these:
 %% textpos magaz xcolor adjustbox eso-pic pdfpages unicode-math fp iftex
 %% libertinus-fonts makecmds xkeyval lm-math xstring xifthen silence
-%% collectbox pgf lipsum wrapfig pdflscape microtype hyperref
+%% collectbox pgf lipsum wrapfig pdflscape polyglossia microtype hyperref
 %% You will need language support, for your language(s).
-%% Either polyglossia or babel, with suitable language pack.
 %% If using lipsum, you will need hyphen-latin.
 
 
@@ -46,8 +35,6 @@
 %% It cannot be used for e-books or for journal publication.
 %% It is not suitable for most non-fiction, because routine academic features
 %% such as bibiography and automatic sectioning are defeated.
-%% Only use it for ORIGINAL works, where you can edit your text. If your
-%% purpose is a reprint of someone else's work, then `novel' is not for you.
 %%
 %% There are pre-configured layouts for the most commonly used choices of
 %% trim size (finished book width and height), and internal layout consistent
@@ -349,18 +336,14 @@
 %% Physical Layout Commands and Settings.
 %% ----------------------------------------------------------------------------
 %% Define user commands that over-ride class option pre-configured settings.
-%% Also sets a variety of miscellaneous lengths: \parsep, \parindent, etc.
+%% Also sets a variety of miscellaneous lengths:s \parsep, \parindent, etc.
 \RequirePackage{novel-LayoutSettings}
 
 
-%% If not using babel, then use polyglossia:
+%% Language support.
 %% ----------------------------------------------------------------------------
-\ifdefined\usebabel
-  \RequirePackage{babel}
-\else
-  \RequirePackage{polyglossia}
-  \setdefaultlanguage[variant=american]{english} % may be changed by user
-\fi
+\RequirePackage{polyglossia}
+\setdefaultlanguage[variant=american]{english} % may be changed by user
 %% end language support.
 
 
