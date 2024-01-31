@@ -2,7 +2,7 @@
 %% The values of the arguments are public industry standards.
 %%
 \ProvidesFile{novel-CGATSTR001.clo}%
-[2023/12/15 any version. (novel Output Intent CGATS TR 001)]
+[2024/01/31 any version. (novel Output Intent CGATS TR 001)]
 %%
 
 % Typically used in the USA.
