@@ -1,5 +1,5 @@
 %% This is file `novel-pdfx.sty', part of `novel' document class.
-%% Copyright (c) 2017-2023 Robert Allgeyer.
+%% Copyright (c) 2017-2024 Robert Allgeyer.
 %%
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, version 1.3c.
@@ -16,7 +16,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesFile{novel-pdfx.sty}%
-[2024/01/31 v1.86 LaTeX file (PDF/X support for novel class)]
+[2024/02/16 v2.00 LaTeX file (PDF/X support for novel class)]
 % This package supports, and is part of, class `novel'.
 % No support for anything but LuaLaTeX.
 
@@ -170,8 +170,33 @@
 %% ----------------------------------------------------------------------------
 %
 % Create hashes that will be used for uuid data. Does not need to be fancy:
-\edef\xmp@docid{\pdfx@mdfivesum{jobname.pdf}}
-\edef\xmp@instid{\pdfx@mdfivesum{\pdfcreationdate}}
+\def\tweak@temp@s{
+  \lowercase\expandafter{% Per 'egreg' tex.stackexchange.com q.351065.
+    \expandafter\def\expandafter\temp@s\expandafter{\temp@s}%
+  }
+  \StrLeft{\temp@s}{8}[\temp@n]
+  \StrRight{\temp@s}{24}[\temp@d]
+  \edef\temp@s{\temp@n-\temp@d}
+  \StrLeft{\temp@s}{13}[\temp@n]
+  \StrRight{\temp@s}{19}[\temp@d] % Omit character, becomes 4.
+  \edef\temp@s{\temp@n-4\temp@d}
+  \StrLeft{\temp@s}{18}[\temp@n]
+  \StrRight{\temp@s}{15}[\temp@d] % Omit character, becomes 8.
+  \edef\temp@s{\temp@n-8\temp@d}
+  \StrLeft{\temp@s}{23}[\temp@n]
+  \StrRight{\temp@s}{12}[\temp@d]
+  \edef\temp@s{\temp@n-\temp@d}
+}
+\edef\temp@s{\pdf@mdfivesum{\jobname\@title\@author novel}}
+\tweak@temp@s
+\edef\@documentID{uuid:\temp@s}
+\edef\temp@s{\pdf@mdfivesum{\pdffeedback creationdate}}
+\tweak@temp@s
+\edef\@instanceID{uuid:\temp@s}
+%%
+
+
+
 %
 %% End general PDF in internal metadata preparation.
 
@@ -223,8 +248,7 @@
   }
 }
 %
-\def\@documentID{uuid:\xmp@docid}
-\def\@instanceID{uuid:\xmp@instid}
+
 %
 \def\@pdfVersion{1.\the\pdfminorversion}
 %

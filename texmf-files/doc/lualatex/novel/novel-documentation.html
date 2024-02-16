@@ -492,7 +492,7 @@ p.overhang {margin-left:32px; text-indent:-16px;}
 <!-- **************************************************************************************** -->
 
 <h1 id="h0" style="padding-top:16px">Document class <i>novel</i> - documentation.</h1>
-<p>V. 1.86, 2024/01/31</p>
+<p>V. 2.00, 2024/02/16</p>
 
 <p class="item">ALERT: If you have been using this document class prior to version 1.80 (February 2023),
 see <a href="#hZ">Appendix Z</a>.</p>
@@ -536,9 +536,15 @@ Expected in early 2024.</p>
 <p class="item"><b>C.</b> If you are on Windows, <i>do not</i> use Notepad! The free <a class="external" rel="external" target="new" href="https://notepad-plus-plus.org">Notepad++</a> (also <a class="external" rel="external" target="new" href="https://portableapps.com/apps/development/notepadpp_portable">Portable</a> version) is a suitable plain text editor. Configure it as specified, with utf-8 but without BOM. Does not matter whether UNIX or DOS line endings, as long as you are consistent.</p>
 </div><!-- end 1.1.2 -->
 
-<h4 id="h1.1.3">1.1.3. News (changed in version 1.86)</h4>
+<h4 id="h1.1.3">1.1.3. Language Support. CHANGED IN VERSION 2.</h4>
 <div class="d4" id="d1.1.3">
-<p class="item">The package PDF has been updated.</p>
+<p class="item">Prior to version 2 (February 2024), the polyglossia package was the only
+method for language support. With version 2, you may use babel instead.</p>
+<p>To use version 2, write <code>v2</code> as d document class option, along with your choice
+of babel language option(s). You may also use other novel class options, as before.</p>
+<p>Example: <code>\documentclass[v2,french]{novel}</code>.</p>
+<p>If you do not write <code>v2</code> as option, then any language will be ignored there,
+and polyglossia will load instead. That was the behavior prior to version 2.</p>
 </div><!-- end 1.1.3 -->
 
 <h4 id="h1.1.4">1.1.4. Use Open Type Fonts</h4>
@@ -1614,10 +1620,10 @@ Unfortunately, novelists of that era had so little to write about, or they would
 </code></p>
 <p>That will print Chapter 1, Chapter 2, and so forth. Of course, only do this for real, numbered chapters, not for "chapter-like" sections. If your book has several parts, and each part re-sets its own chapter count, use \setcounter{novelcn}{1} prior to the first chapter in each part.</p>
 <p class="item"><b>B.</b> If you would like the number to be spelled out, as in Chapter One, Chapter Two, and so forth, then try the <i>fmtcount</i> package. It can also do ordinals such as First Chapter, Second Chapter. See the <i>fmtcount</i> package documentation for details.</p>
-<p class="item"><b>C.</b> If your document's language is other than English, use <code>\setdefaultlanguage</code> <i>before</i> you load the <i>fmtcount</i> package. If you do it later, then positioning will be incorrect.</p>
+<p class="item"><b>C.</b> If your document's language is other than English, set it <i>before</i> you load the <i>fmtcount</i> package. If you do it later, then positioning will be incorrect.</p>
 <p class="item"><b>D.</b> <b>Example:</b> With <i>fmtcount</i> loaded in Preamble.</p>
 <p class="code"><code>
-% if necessary, use \setdefaultlanguage first.<br/>
+% if necessary, use set language first.<br/>
 \RequirePackage{fmtcount}<br/>
 </code></p>
 <p>Example usage in chapter titles:</p>
@@ -3115,12 +3121,13 @@ Some text {\baskf\addfontfeature{Numbers=Monospaced} hello 123} is here.
 <div id="pageZ" class="page">
 
 
-<h2 id="hZ">Appendix Z. &nbsp; Changes in v.1.86.</h2>
+<h2 id="hZ">Appendix Z. &nbsp; Changes in v.2.00.</h2>
 <div class="d2" id="dZ">
 
 <h4>Important Changes</h4>
 <div class="d3">
-<p>Version 1.86 (2024) docs edited..</p>
+<p>Version 2.00 (2024) Added choice babel/polyglossia. Revised uuid.</p>
+<p>Version 1.86 (2024) docs edited.</p>
 <p>Version 1.84 (2023) docs edited. Probably final update.</p>
 <p>Version 1.83 (2023) corrected minor typo. Will not affect most users.</p>
 <p>Version 1.82 (2023) adds a user setting, to change the default indent.</p>

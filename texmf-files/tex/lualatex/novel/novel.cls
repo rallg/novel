@@ -1,5 +1,5 @@
 %% This is file `novel.cls', LuaLaTeX `novel' document class.
-%% Copyright 2017-2023 Robert Allgeyer.
+%% Copyright 2017-2024 Robert Allgeyer.
 %% Contact: Username `rallg' @ GitHub and tex.stackexchange. `RobtAll' @ CTAN.
 %% 
 %% This file may be distributed and/or modified under the
@@ -8,7 +8,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 % Actually needs LuaLaTeX, at least version 0.95 from TeXLive 2016.
-\ProvidesClass{novel}[2024/01/31 v1.86 LaTeX document class]
+\ProvidesClass{novel}[2024/02/16 v2.00 LaTeX document class]
 %%
 
 %% During the years since `novel' was introduced, there have been
@@ -22,7 +22,7 @@
 %% In addition to a minimal LaTeX setup, with luatex, you will need these:
 %% textpos magaz xcolor adjustbox eso-pic pdfpages unicode-math fp iftex
 %% libertinus-fonts makecmds xkeyval lm-math xstring xifthen silence
-%% collectbox pgf lipsum wrapfig pdflscape microtype hyperref polyglossia
+%% collectbox pgf lipsum wrapfig pdflscape microtype hyperref babel
 %% You will need language support, for your language(s).
 %% If using lipsum, you will need hyphen-latin.
 
@@ -128,32 +128,34 @@
 %% ----------------------------------------------------------------------------
 % Allowed option list:
 %   draft xml shademargins cropmarks cropview closecrop
-%   coverart sandbox unblock mtoff test revert
+%   coverart sandbox unblock mtoff test revert v2 (with babel languages)
 % Yes, I realize that this could have been done another way, but I want
 %   to issue error messages from `novel' rather than (say) `keyval':
-\gdef\@mycol{\@classoptionslist}
+\gdef\@mycol{\@classoptionslist,}
 \StrDel{\@mycol}{ }[\@mycol]
-\StrDel{\@mycol}{,}[\@mycol]
-\StrDel{\@mycol}{revert}[\@mycol]
-\StrDel{\@mycol}{draft}[\@mycol]
-\StrDel{\@mycol}{xml}[\@mycol]
-\StrDel{\@mycol}{shademargins}[\@mycol]
-\StrDel{\@mycol}{graytext}[\@mycol] % Obsolete. Now always allows graytext.
-\StrDel{\@mycol}{greytext}[\@mycol] % See above.
-\StrDel{\@mycol}{cropmarks}[\@mycol]
-\StrDel{\@mycol}{cropview}[\@mycol]
-\StrDel{\@mycol}{closecrop}[\@mycol]
-\StrDel{\@mycol}{coverart}[\@mycol]
-\StrDel{\@mycol}{unblock}[\@mycol]
-\StrDel{\@mycol}{mtoff}[\@mycol]
-\StrDel{\@mycol}{test}[\@mycol]
-\StrDel{\@mycol}{sandbox}[\@mycol]
+\StrDel{\@mycol}{revert,}[\@mycol]
+\StrDel{\@mycol}{draft,}[\@mycol]
+\StrDel{\@mycol}{xml,}[\@mycol]
+\StrDel{\@mycol}{shademargins,}[\@mycol]
+\StrDel{\@mycol}{graytext,}[\@mycol] % Obsolete. Now always allows graytext.
+\StrDel{\@mycol}{greytext,}[\@mycol] % See above.
+\StrDel{\@mycol}{cropmarks,}[\@mycol]
+\StrDel{\@mycol}{cropview,}[\@mycol]
+\StrDel{\@mycol}{closecrop,}[\@mycol]
+\StrDel{\@mycol}{coverart,}[\@mycol]
+\StrDel{\@mycol}{unblock,}[\@mycol]
+\StrDel{\@mycol}{mtoff,}[\@mycol]
+\StrDel{\@mycol}{test,}[\@mycol]
+\StrDel{\@mycol}{sandbox,}[\@mycol]
 %
-\ifthenelse{\equal{\@mycol}{}}{}{
-  \ClassWarning{novel}{^^JUnrecognized class option: \@mycol. ^^J%
-   The unrecognized option was ignored! ^^J%
-   Note that font size, document size, and language ^^J%
-   are not `novel' class options. See documentation. ^^J}%
+\newif\ifusing@babel % New in novel version 2.
+\IfSubStr{\@mycol}{v2}{
+  \StrDel{\@mycol}{v2,}[\@mycol]
+  \ifthenelse{\equal{\@mycol}{}}{\def\@mycol{american}}{}
+  \RequirePackage[\@mycol]{babel}
+}{
+  \RequirePackage{polyglossia}
+  \setmainlanguage[variant=american]{english}
 }
 % Version 1.80 has minor tweaks. Option `revert' for version 1.52 behavior.
 \newif \if@novrevert
@@ -220,6 +222,7 @@
 % Option test. Primarily for developer use.
 \newif \if@testsuite
 \DeclareOption{test}{\@testsuitetrue}
+\DeclareOption{v2}{\using@babeltrue}
 %
 % Option sandbox. for artwork and tables. Max 4 pages.
 \newif \if@sandbox
@@ -338,13 +341,6 @@
 %% Define user commands that over-ride class option pre-configured settings.
 %% Also sets a variety of miscellaneous lengths: \parsep, \parindent, etc.
 \RequirePackage{novel-LayoutSettings}
-
-
-%% Use polyglossia:
-%% ----------------------------------------------------------------------------
-\RequirePackage{polyglossia}
-\setdefaultlanguage[variant=american]{english} % may be changed by user
-%% end language support.
 
 
 %% Additional Macros, Loaded in Preamble.

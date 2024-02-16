@@ -4,7 +4,7 @@ LuaLaTeX document class for printed popular fiction
 GitHub repository `rallg/novel` is the canonical repository for the
 `novel` document class, available as package `novel` in TeXlive and at CTAN.
 If you find a bug in `novel` (unlikely) you may report it here.
-Current version 1.86 at CTAN.
+Current version 2.00 at CTAN.
 
 Although `novel` continues to work, its use for new projects is discouraged.
 The reason is that the code is more complex than it needs to be, given the
