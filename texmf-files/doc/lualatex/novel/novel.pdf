@@ -8,10 +8,10 @@ stream
    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
      <rdf:Description rdf:about=""
          xmlns:xmp="http://ns.adobe.com/xap/1.0/">
-       <xmp:ModifyDate>2024-02-16T08:29:32-08:00</xmp:ModifyDate>
-       <xmp:CreateDate>2024-02-16T08:29:32-08:00</xmp:CreateDate>
+       <xmp:ModifyDate>2024-02-16T12:25:21-08:00</xmp:ModifyDate>
+       <xmp:CreateDate>2024-02-16T12:25:21-08:00</xmp:CreateDate>
        <xmp:CreatorTool>LuaLaTeX with novel and microtype</xmp:CreatorTool>
-      <xmp:MetadataDate>2024-02-16T08:29:32-08:00</xmp:MetadataDate>
+      <xmp:MetadataDate>2024-02-16T12:25:21-08:00</xmp:MetadataDate>
      </rdf:Description>
      <rdf:Description rdf:about=""
          xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -25,7 +25,7 @@ stream
      <rdf:Description rdf:about=""
          xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/">
        <xmpMM:DocumentID>uuid:8be8dbc2-8185-4bd3-89d9-3e8e2e6caf20</xmpMM:DocumentID>
-       <xmpMM:InstanceID>uuid:fe42ffd2-8326-4588-8b41-6b5184d4ec27</xmpMM:InstanceID>
+       <xmpMM:InstanceID>uuid:da00d9c2-b166-4c4e-89bc-35a1753d1343</xmpMM:InstanceID>
        <xmpMM:RenditionClass>default</xmpMM:RenditionClass>
        <xmpMM:VersionID>1</xmpMM:VersionID>
      </rdf:Description>
@@ -49,7 +49,7 @@ stream
 endstream
 endobj
 7 0 obj
-<< /Length 8456 >>       
+<< /Length 8460 >>       
 stream
 0 g 0 G
 0 g 0 G
@@ -60,7 +60,7 @@ BT
 /F95 13.62884 Tf
 1 0 0 1 105.124 508.167 Tm [<0022>-250<00250050>-7<00440056004E0046004F0055>-250<0024004D004200540054>-250<004700500053>-250<005500490046>-250<0033004600540055>-250<00500047>-250<00360054>]TJ
 /F95 11.3574 Tf
-1 0 0 1 141.246 493.372 Tm [<0037>80<004600530054004A0050004F>-250<09CA000F09C809C8>-250<00090027004600430053005600420053>-15<005A>-250<09CA09C809CA09CC000A>]TJ
+1 0 0 1 139.997 493.372 Tm [<0037>80<004600530054004A0050004F>-250<09CA000F09C8000F09C9>-250<00090027004600430053005600420053>-15<005A>-250<09CA09C809CA09CC000A>]TJ
 /F97 11.3574 Tf
 1 0 0 1 53.421 446.202 Tm [<0038004900460053>8<0046>-250<004A0054>-250<005500490046>-250<00450050>-7<00440056004E0046004F005500420055004A0050004F00200020>]TJ
 /F95 11.3574 Tf
@@ -421,44 +421,44 @@ endobj
 << /Type /Catalog /Pages 11 0 R /Metadata 4 0 R/OutputIntents [ <</Type/OutputIntent/S/GTS_PDFX/OutputCondition (SWOP (Publication) printing in USA (Printing process definition: ANSI CGATS.6).)/OutputConditionIdentifier (CGATS TR 001)/Info (U.S. Web Coated (SWOP) v2)/RegistryName (http://www.color.org)>> ] >>
 endobj
 31 0 obj
-<<  /Title(Novel\040Document\040Class)/Creator(LuaLaTeX\040with\040novel\040and\040microtype)/CreationDate(D:20240216082932-08'00')/ModDate(D:20240216082932-08'00')/Producer(LuaLaTeX\040with\040novel-pdfx\040and\040hyperref)/Trapped/False/GTS_PDFXVersion(PDF/X-1a:2001)/GTS_PDFXConformance(PDF/X-1a:2001) >>
+<<  /Title(Novel\040Document\040Class)/Creator(LuaLaTeX\040with\040novel\040and\040microtype)/CreationDate(D:20240216122521-08'00')/ModDate(D:20240216122521-08'00')/Producer(LuaLaTeX\040with\040novel-pdfx\040and\040hyperref)/Trapped/False/GTS_PDFXVersion(PDF/X-1a:2001)/GTS_PDFXConformance(PDF/X-1a:2001) >>
 endobj
 xref
 0 32
 0000000000 65535 f 
-0000011462 00000 n 
-0000011482 00000 n 
-0000011502 00000 n 
+0000011466 00000 n 
+0000011486 00000 n 
+0000011506 00000 n 
 0000000020 00000 n 
-0000011319 00000 n 
-0000011167 00000 n 
+0000011323 00000 n 
+0000011171 00000 n 
 0000002652 00000 n 
-0000030846 00000 n 
-0000019433 00000 n 
-0000014089 00000 n 
-0000031211 00000 n 
-0000011555 00000 n 
-0000013000 00000 n 
-0000011634 00000 n 
-0000011705 00000 n 
-0000013242 00000 n 
-0000014248 00000 n 
-0000014453 00000 n 
-0000018160 00000 n 
-0000014631 00000 n 
-0000014703 00000 n 
-0000018399 00000 n 
-0000019589 00000 n 
-0000019792 00000 n 
-0000029062 00000 n 
-0000020128 00000 n 
-0000020503 00000 n 
-0000029303 00000 n 
-0000031005 00000 n 
-0000031272 00000 n 
-0000031599 00000 n 
+0000030850 00000 n 
+0000019437 00000 n 
+0000014093 00000 n 
+0000031215 00000 n 
+0000011559 00000 n 
+0000013004 00000 n 
+0000011638 00000 n 
+0000011709 00000 n 
+0000013246 00000 n 
+0000014252 00000 n 
+0000014457 00000 n 
+0000018164 00000 n 
+0000014635 00000 n 
+0000014707 00000 n 
+0000018403 00000 n 
+0000019593 00000 n 
+0000019796 00000 n 
+0000029066 00000 n 
+0000020132 00000 n 
+0000020507 00000 n 
+0000029307 00000 n 
+0000031009 00000 n 
+0000031276 00000 n 
+0000031603 00000 n 
 trailer
-<< /Size 32 /Root 30 0 R /Info 31 0 R /ID [ <5828568D4751CD080DCDD3C64B1EDDCD> <5828568D4751CD080DCDD3C64B1EDDCD> ] >>
+<< /Size 32 /Root 30 0 R /Info 31 0 R /ID [ <3A725973FC964124183128E53FF5D314> <3A725973FC964124183128E53FF5D314> ] >>
 startxref
-31923
+31927
 %%EOF

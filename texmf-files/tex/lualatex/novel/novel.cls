@@ -8,7 +8,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 % Actually needs LuaLaTeX, at least version 0.95 from TeXLive 2016.
-\ProvidesClass{novel}[2024/02/16 v2.00 LaTeX document class]
+\ProvidesClass{novel}[2024/02/17 v2.0.1 LaTeX document class]
 %%
 
 %% During the years since `novel' was introduced, there have been
@@ -22,8 +22,9 @@
 %% In addition to a minimal LaTeX setup, with luatex, you will need these:
 %% textpos magaz xcolor adjustbox eso-pic pdfpages unicode-math fp iftex
 %% libertinus-fonts makecmds xkeyval lm-math xstring xifthen silence
-%% collectbox pgf lipsum wrapfig pdflscape microtype hyperref babel
+%% collectbox pgf lipsum wrapfig pdflscape microtype hyperref
 %% You will need language support, for your language(s).
+%% Normally package polyglossia. Experimental, v2: babel.
 %% If using lipsum, you will need hyphen-latin.
 
 
@@ -151,11 +152,15 @@
 \newif\ifusing@babel % New in novel version 2.
 \IfSubStr{\@mycol}{v2}{
   \StrDel{\@mycol}{v2,}[\@mycol]
-  \ifthenelse{\equal{\@mycol}{}}{\def\@mycol{american}}{}
+  \ifthenelse{\equal{\@mycol}{}}{\def\@mycol{american,}}{}
   \RequirePackage[\@mycol]{babel}
+  \DeclareDocumentCommand\setmainlanguage{O{}m}{
+    \typeout{Using v2 with babel, not polyglossia. %
+      \string\setmainlanguage\space ignored.}
+  }
 }{
   \RequirePackage{polyglossia}
-  \setmainlanguage[variant=american]{english}
+  \setmainlanguage[variant=american]{english} % Default.
 }
 % Version 1.80 has minor tweaks. Option `revert' for version 1.52 behavior.
 \newif \if@novrevert
@@ -299,7 +304,7 @@
 % In draft mode only, the `shademargins' option requires `grayscale',
 %   which will be temporarily enabled, even if not specifically requested.
 %
-\RequirePackage[gray,hyperref]{xcolor}
+\RequirePackage[gray]{xcolor}
 %
 % adjustbox and eso-pic cannot precede xcolor.
 \RequirePackage{adjustbox} % for scaling and moving
