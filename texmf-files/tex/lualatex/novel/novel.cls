@@ -8,7 +8,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 % Actually needs LuaLaTeX, at least version 0.95 from TeXLive 2016.
-\ProvidesClass{novel}[2024/02/17 v2.0.1 LaTeX document class]
+\ProvidesClass{novel}[2024/02/17 v2.1 LaTeX document class]
 %%
 
 %% During the years since `novel' was introduced, there have been
@@ -24,7 +24,9 @@
 %% libertinus-fonts makecmds xkeyval lm-math xstring xifthen silence
 %% collectbox pgf lipsum wrapfig pdflscape microtype hyperref
 %% You will need language support, for your language(s).
-%% Normally package polyglossia. Experimental, v2: babel.
+%% Default support is polyglossia. Write \setmainlanguage[options]{language}
+%% in preamble. Alternative babel, write `v2' as a document class option,
+%% and write choice of language as a document class option.
 %% If using lipsum, you will need hyphen-latin.
 
 
@@ -69,6 +71,7 @@
     Command line:  lualatex your-document.tex}
 \fi
 \pdfimageresolution=300 % default dpi if image does not say
+\nofiles
 %
 \RequirePackage{etoolbox} % general good stuff
 \RequirePackage{xifthen} % improved ifthenelse handling
@@ -129,39 +132,8 @@
 %% ----------------------------------------------------------------------------
 % Allowed option list:
 %   draft xml shademargins cropmarks cropview closecrop
-%   coverart sandbox unblock mtoff test revert v2 (with babel languages)
-% Yes, I realize that this could have been done another way, but I want
-%   to issue error messages from `novel' rather than (say) `keyval':
-\gdef\@mycol{\@classoptionslist,}
-\StrDel{\@mycol}{ }[\@mycol]
-\StrDel{\@mycol}{revert,}[\@mycol]
-\StrDel{\@mycol}{draft,}[\@mycol]
-\StrDel{\@mycol}{xml,}[\@mycol]
-\StrDel{\@mycol}{shademargins,}[\@mycol]
-\StrDel{\@mycol}{graytext,}[\@mycol] % Obsolete. Now always allows graytext.
-\StrDel{\@mycol}{greytext,}[\@mycol] % See above.
-\StrDel{\@mycol}{cropmarks,}[\@mycol]
-\StrDel{\@mycol}{cropview,}[\@mycol]
-\StrDel{\@mycol}{closecrop,}[\@mycol]
-\StrDel{\@mycol}{coverart,}[\@mycol]
-\StrDel{\@mycol}{unblock,}[\@mycol]
-\StrDel{\@mycol}{mtoff,}[\@mycol]
-\StrDel{\@mycol}{test,}[\@mycol]
-\StrDel{\@mycol}{sandbox,}[\@mycol]
-%
-\newif\ifusing@babel % New in novel version 2.
-\IfSubStr{\@mycol}{v2}{
-  \StrDel{\@mycol}{v2,}[\@mycol]
-  \ifthenelse{\equal{\@mycol}{}}{\def\@mycol{american,}}{}
-  \RequirePackage[\@mycol]{babel}
-  \DeclareDocumentCommand\setmainlanguage{O{}m}{
-    \typeout{Using v2 with babel, not polyglossia. %
-      \string\setmainlanguage\space ignored.}
-  }
-}{
-  \RequirePackage{polyglossia}
-  \setmainlanguage[variant=american]{english} % Default.
-}
+%   coverart sandbox unblock mtoff test revert v2 (babel languages)
+% Version 2 change allows language support from polyglossia or babel.
 % Version 1.80 has minor tweaks. Option `revert' for version 1.52 behavior.
 \newif \if@novrevert
 \DeclareOption{revert}{\@novreverttrue}
@@ -227,7 +199,8 @@
 % Option test. Primarily for developer use.
 \newif \if@testsuite
 \DeclareOption{test}{\@testsuitetrue}
-\DeclareOption{v2}{\using@babeltrue}
+\newif \ifusing@vtwo
+\DeclareOption{v2}{\using@vtwotrue} % Reserved for future use.
 %
 % Option sandbox. for artwork and tables. Max 4 pages.
 \newif \if@sandbox
@@ -326,6 +299,20 @@
   \@setfontsize\normalsize{\@TentativeEmN}{\@TentativeBLSkipN}%
 }
 \normalsize
+%%
+\ifusing@vtwo\else
+  \RequirePackage{polyglossia}
+  \ExplSyntaxOn
+  \pretocmd\xpg@set@alias@values{%
+	\prop_if_exist:cF { xpg@alias@keyvals@#1@#4 }
+	{ \prop_new:c {xpg@alias@keyvals@#1@#4} }
+  }{}{}
+  \ExplSyntaxOff
+  \setmainlanguage[variant=american]{english}
+\fi
+%%
+
+
 \RequirePackage[no-math]{fontspec} % For LuaLaTeX. NOT package `fontenc'.
 % The `novel' class is not intended for math. But TeX assumes you do math,
 %   so it needs a math font, whether you like it or not.
@@ -439,6 +426,11 @@
   \RequirePackage{novel-PostLayout} % calculates shademargins, cropmarks, etc.
   \RequirePackage{novel-pdfx}% also provides an \AtBeginDocument macro
   \@GetInitialYpos% in `novel-TextMacros.sty
+  \ifdefined\setmainlanguage\else
+    \ifusing@vtwo
+      \@ifpackageloaded{babel}{}{\RequirePackage[american]{babel}}
+    \fi
+  \fi
 }%
 %% end AtEndPreamble
 
@@ -627,10 +619,6 @@
 \AtEndDocument{%
   \if@coverart\else%
     \if@sandbox\else%
-      \immediate\write\@auxout{%
-        \string\xdef\string\@AllGoodImages{\@AllGoodImages}^^J%
-        \string\xdef\string\@UnknownImages{\@UnknownImages}^^J%
-      }%
       \ifnocle@rtoend\else\cleartoend\fi%
     \fi%
   \fi%

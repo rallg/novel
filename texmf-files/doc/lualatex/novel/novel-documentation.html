@@ -492,7 +492,7 @@ p.overhang {margin-left:32px; text-indent:-16px;}
 <!-- **************************************************************************************** -->
 
 <h1 id="h0" style="padding-top:16px">Document class <i>novel</i> - documentation.</h1>
-<p>V. 2.0.1, 2024/02/17</p>
+<p>V. 2.1, 2024/02/17</p>
 
 <p class="item">ALERT: If you have been using this document class prior to version 1.80 (February 2023),
 see <a href="#hZ">Appendix Z</a>.</p>
@@ -538,27 +538,31 @@ Expected in early 2024.</p>
 
 <h4 id="h1.1.3">1.1.3. Language Support. CHANGED IN VERSION 2.</h4>
 <div class="d4" id="d1.1.3">
-<p class="item">Prior to version 2 (February 2024), the polyglossia package was the only
-method for language support. With version 2, you may use babel instead.</p>
-<p>For version 1.xx behavior, which automatically loads polyglossia, use
-<code>\setmainlanguage[<i>options</i>{<i>language</i>}</code> in preamble,
-to choose the main language for your document. You may also use other polyglossia commands.
-See the polyglossia package documentation. You do not choose language as class option.</p>
-<p>To use version 2, write <code>v2</code> as a document class option, along with your choice
-of babel language. Only choose a single language. You may also use other novel class options, as before.</p>
-<p>Example: <code>\documentclass[v2,french]{novel}</code>.</p>
-<p>If you do not write <code>v2</code> as option, then any language will be ignored there,
-and polyglossia will load instead.</p>
-<p>If you are using babel, and need a second language, use the <code>\foreignlanguage</code>
-command, as described in babel documentation.</p>
-<p>Using polyglossia is considered normal. Using babel is considered experimental.</p>
+<p class="item"><b>A.</b> Prior to version 2 (February 2024), the polyglossia package was the only
+method for language support. With version 2, you may use either polyglossia or babel.</p>
+<p class="item"><b>B.</b> Do not write <code>\usepackage</code> or <code>\RequirePackage</code>
+for polyglossia or babel. The correct package will be loaded automatically.</p>
+<p class="item"><b>C.</b> To use polyglossia, write
+<code>\setmainlanguage[<i>options</i>]{<i>language</i>}</code> in preamble.
+You may also use other polyglossia commands. Do not use the document class options
+to set language. See the polyglossia package documentation.</p>
+<p class="item"><b>D.</b> To use babel, write <code>v2</code> as a document class option, along with your choice
+of babel language options. See babel documentation.</p>
+<p class="item"><b>E.</b> If you do not choose either method, then the default language
+will be US English, using polyglossia.</p>
+<p class="item"><b>F.</b> Some examples:</p>
+<p>&bull; <code>\documentclass{novel}</code> Polyglossia.</p>
+<p><span style="visibility:hidden">&bull;</span> <code>\setmainlanguage{french}</code>. french.</p>
+<p>&bull; <code>\documentclass[v2,french]{novel}</code>. Babel, french.</p>
+<p>&bull; <code>\documentclass[french]{novel}</code>. Uses polyglossia, because no <code>v2</code>
+as class option. The request for <code>french</code> is ignored, and triggers
+"unknown class option".</p>
 </div><!-- end 1.1.3 -->
 
 <h4 id="h1.1.4">1.1.4. Use Open Type Fonts</h4>
 <div class="d4" id="d1.1.4">
 <p class="item"><b>A.</b> The built-in <i>fontspec</i> package requires utf-8 encoding. It is able to load Open Type fonts, and access their internal feature sets. Forget Type 1 fonts and special encodings! If you wish to use Greek or Cyrillic, all you need are compatible fonts.</p>
 <p class="item"><b>B.</b> If you accept the pre-configured fonts (from package <i>libertinus-fonts</i>), then you do not need to know anything about <i>fontspec</i>. But if you wish to configure your own fonts, <a href="#hE">Appendix E</a> reviews the most important parts of <i>fontspec</i> syntax.</p>
-<div style="clear:both"></div>
 </div><!-- end 1.1.4 -->
 
 <h4 id="h1.1.5">1.1.5. Read About Book Design</h4>
@@ -3128,12 +3132,12 @@ Some text {\baskf\addfontfeature{Numbers=Monospaced} hello 123} is here.
 <div id="pageZ" class="page">
 
 
-<h2 id="hZ">Appendix Z. &nbsp; Changes in v.2.0.1.</h2>
+<h2 id="hZ">Appendix Z. &nbsp; Changes in v.2.1.</h2>
 <div class="d2" id="dZ">
 
 <h4>Important Changes</h4>
 <div class="d3">
-<p>Version 2.0.1 (2024) Added choice babel/polyglossia. Revised uuid.</p>
+<p>Version 2.1  (2024) Added choice babel/polyglossia. Revised uuid.</p>
 <p>Version 1.86 (2024) docs edited.</p>
 <p>Version 1.84 (2023) docs edited. Probably final update.</p>
 <p>Version 1.83 (2023) corrected minor typo. Will not affect most users.</p>
